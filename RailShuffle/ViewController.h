@@ -33,6 +33,9 @@
 -(void)setupButtons;
 -(IBAction)prepareForUnwind:(UIStoryboardSegue *)segue;
 
+-(void)arrangeLetters:(BOOL)shuffle;
+-(void)newArrangement;
+
 -(IBAction)playButtonPressed:(id)sender;
 -(IBAction)musicButtonPressed:(id)sender;
 

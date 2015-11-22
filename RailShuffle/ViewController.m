@@ -47,6 +47,8 @@
     shouldShuffle = FALSE;
     [self setupButtons];
     [[SoundPlayer sharedSoundPlayer] playSong:3];
+    
+    [self performSelector:@selector(newArrangement) withObject:NULL afterDelay:SHUFFLE_TIME];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -102,6 +104,50 @@
         musicButton.center = CGPointMake(screenWidth-30.0, 259.0);
     [UIView commitAnimations];
 }
+
+-(void)arrangeLetters:(BOOL)shuffle
+{
+    int sorter[2][7];
+    for (int i=0;i<7;i++)
+    {
+        sorter[0][i] = i;
+        if (shuffle)
+            sorter[1][i] = arc4random() & 2047;
+        else
+            sorter[1][i] = i;
+    }
+    for (int i=0;i<6;i++)
+        for (int j=i+1;j<7;j++)
+        {
+            if (sorter[1][i] > sorter[1][j])
+            {
+                int k = sorter[1][i];
+                sorter[1][i] = sorter[1][j];
+                sorter[1][j] = k;
+                k = sorter[0][i];
+                sorter[0][i] = sorter[0][j];
+                sorter[0][j] = k;
+            }
+        }
+    
+    [UIView beginAnimations:@"dummy" context:nil];
+    [UIView setAnimationDuration:SHUFFLE_TIME];
+    for (int i=0;i<7;i++)
+    {
+        UIImageView *tmpIV = (UIImageView*)[shuffleLetters objectAtIndex:(NSUInteger)sorter[0][i]];
+        tmpIV.center = CGPointMake(letterXPos[i], letterYPos[i]);
+        tmpIV.transform = CGAffineTransformMakeRotation(letterAngles[i]);
+    }
+    [UIView commitAnimations];
+}
+
+-(void)newArrangement
+{
+    shouldShuffle = !shouldShuffle;
+    [self arrangeLetters:shouldShuffle];
+    [self performSelector:@selector(newArrangement) withObject:NULL afterDelay:shouldShuffle ? SHUFFLE_TIME + 0.2 :SHUFFLE_WAIT];
+}
+
 
 -(IBAction)prepareForUnwind:(UIStoryboardSegue *)segue {
 }
