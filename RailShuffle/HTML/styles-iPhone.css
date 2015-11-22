@@ -1,0 +1,12 @@
+body {margin: 0px; padding: 0px; background-color: #cccc99; }
+h1 {color: #220000; font-size: 14pt; margin-top: 10px; font-family: AmericanTypewriter-Bold;}
+p {color: #220000; font-size: 10pt; font-family: AmericanTypewriter; }
+a {color: #000000; font-size: 10pt; font-family: AmericanTypewriter-Bold;}
+img.headline {margin-top:10px; display: block;   margin-left: auto;   margin-right: auto; width:160px; height:105px;}
+img.banner {position:absolute; top:0px;left:60px; width:100px; height:100px;}
+img.cartpic {width:210px; height:52px;}
+img.example1 {width:154px; height:96px; margin-left:5px;}
+img.timesign {width:200px; height:67px;}
+img.icon {margin-right:10px;}
+td.leftmargin {width:60px; background-image:url(leftmargin-iPhone.png);}
+td.rightmargin {width:60px; background-image:url(rightmargin-iPhone.png);}
