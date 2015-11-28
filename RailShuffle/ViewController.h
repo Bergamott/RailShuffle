@@ -27,6 +27,8 @@
     BOOL shouldShuffle;
     
     float screenWidth;
+    
+    IBOutlet UIView *levelView;
 
 }
 
@@ -38,6 +40,7 @@
 
 -(IBAction)playButtonPressed:(id)sender;
 -(IBAction)musicButtonPressed:(id)sender;
+-(IBAction)backFromLevelsPressed:(id)sender;
 
 @end
 

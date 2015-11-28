@@ -16,6 +16,8 @@
 #define ANGLE_SIN -0.479
 #define ANGLE_COS 0.878
 
+#define FADE_TIME 0.75
+
 @interface ViewController ()
 
 @end
@@ -155,7 +157,14 @@
 
 -(IBAction)playButtonPressed:(id)sender
 {
-    
+    levelView.alpha = 0;
+    levelView.hidden = FALSE;
+    [UIView animateWithDuration:FADE_TIME
+                     animations:^{
+                         levelView.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished){
+                     }];
 }
 
 -(IBAction)musicButtonPressed:(id)sender
@@ -165,5 +174,15 @@
     checkbox.hidden = ![sp isMusicOn];
 }
 
+-(IBAction)backFromLevelsPressed:(id)sender
+{
+    [UIView animateWithDuration:FADE_TIME
+                     animations:^{
+                         levelView.alpha = 0;
+                     }
+                     completion:^(BOOL finished){
+                         levelView.hidden = TRUE;
+                     }];
+}
 
 @end
