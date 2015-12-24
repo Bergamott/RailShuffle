@@ -24,6 +24,7 @@
 		9A02F9091BF8D4EB00BC136E /* rightmargin.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A02F8EB1BF8D4EB00BC136E /* rightmargin.png */; };
 		9A02F9181BF8D4EB00BC136E /* styles-iPhone.css in Resources */ = {isa = PBXBuildFile; fileRef = 9A02F8FB1BF8D4EB00BC136E /* styles-iPhone.css */; };
 		9A02F9191BF8D4EB00BC136E /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 9A02F8FC1BF8D4EB00BC136E /* styles.css */; };
+		9A222CF21C2C931D000AECF6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A222CF11C2C931D000AECF6 /* Default-568h@2x.png */; };
 		9A6DD3591C021D66007353E7 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9A6DD34E1C021D66007353E7 /* chime.wav */; };
 		9A6DD35A1C021D66007353E7 /* clementine.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9A6DD34F1C021D66007353E7 /* clementine.mp3 */; };
 		9A6DD35B1C021D66007353E7 /* click.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9A6DD3501C021D66007353E7 /* click.wav */; };
@@ -99,6 +100,7 @@
 		9A02F8EB1BF8D4EB00BC136E /* rightmargin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightmargin.png; sourceTree = "<group>"; };
 		9A02F8FB1BF8D4EB00BC136E /* styles-iPhone.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "styles-iPhone.css"; sourceTree = "<group>"; };
 		9A02F8FC1BF8D4EB00BC136E /* styles.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = styles.css; sourceTree = "<group>"; };
+		9A222CF11C2C931D000AECF6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		9A6DD34E1C021D66007353E7 /* chime.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = chime.wav; sourceTree = "<group>"; };
 		9A6DD34F1C021D66007353E7 /* clementine.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = clementine.mp3; sourceTree = "<group>"; };
 		9A6DD3501C021D66007353E7 /* click.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = click.wav; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 		9ADECEC01BF7EC1900EFD8AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9A222CF11C2C931D000AECF6 /* Default-568h@2x.png */,
 				9AE3496A1C2A0AB8002E4FCC /* splash-iphone.png */,
 				9AE349621C2A0913002E4FCC /* Default-Landscape.png */,
 				9AE349631C2A0913002E4FCC /* Default-Portrait.png */,
@@ -333,6 +336,7 @@
 				TargetAttributes = {
 					9ADECEA51BF7EB4800EFD8AD = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = Q5HHAHTS7L;
 					};
 				};
 			};
@@ -419,6 +423,7 @@
 				9A6DD35D1C021D66007353E7 /* fanfare.wav in Resources */,
 				9ADECED61BF7EC8300EFD8AD /* letter_l.png in Resources */,
 				9AA20B2A1C0A36B5007F4B20 /* 3.png in Resources */,
+				9A222CF21C2C931D000AECF6 /* Default-568h@2x.png in Resources */,
 				9ADECEC71BF7EC1900EFD8AD /* intro_iphone.png in Resources */,
 				9A02F9181BF8D4EB00BC136E /* styles-iPhone.css in Resources */,
 				9ADECEDC1BF7ED0C00EFD8AD /* musicbutton.png in Resources */,
@@ -559,11 +564,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = RailShuffle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.eweguo.RailShuffle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "864a191b-c438-484d-be52-a881dca56344";
 			};
 			name = Debug;
 		};
@@ -571,11 +579,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = RailShuffle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.eweguo.RailShuffle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
