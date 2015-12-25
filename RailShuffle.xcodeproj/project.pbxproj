@@ -53,6 +53,9 @@
 		9AA20B331C0A36B5007F4B20 /* levelsign.png in Resources */ = {isa = PBXBuildFile; fileRef = 9AA20B241C0A36B5007F4B20 /* levelsign.png */; };
 		9AA20B341C0A36B5007F4B20 /* orange_paper.png in Resources */ = {isa = PBXBuildFile; fileRef = 9AA20B251C0A36B5007F4B20 /* orange_paper.png */; };
 		9AA20B351C0A36B5007F4B20 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 9AA20B261C0A36B5007F4B20 /* plus.png */; };
+		9ACF574B1C2CA2570077CA28 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ACF574A1C2CA2570077CA28 /* GameScene.m */; };
+		9ACF574D1C2CA2A60077CA28 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ACF574C1C2CA2A60077CA28 /* SpriteKit.framework */; };
+		9ACF574F1C2CAB7C0077CA28 /* pieces.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 9ACF574E1C2CAB7C0077CA28 /* pieces.atlas */; };
 		9ADECEAB1BF7EB4800EFD8AD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ADECEAA1BF7EB4800EFD8AD /* main.m */; };
 		9ADECEAE1BF7EB4800EFD8AD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ADECEAD1BF7EB4800EFD8AD /* AppDelegate.m */; };
 		9ADECEB11BF7EB4800EFD8AD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ADECEB01BF7EB4800EFD8AD /* ViewController.m */; };
@@ -130,6 +133,10 @@
 		9AA20B241C0A36B5007F4B20 /* levelsign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = levelsign.png; sourceTree = "<group>"; };
 		9AA20B251C0A36B5007F4B20 /* orange_paper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange_paper.png; sourceTree = "<group>"; };
 		9AA20B261C0A36B5007F4B20 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		9ACF57491C2CA2570077CA28 /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
+		9ACF574A1C2CA2570077CA28 /* GameScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
+		9ACF574C1C2CA2A60077CA28 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
+		9ACF574E1C2CAB7C0077CA28 /* pieces.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = pieces.atlas; sourceTree = "<group>"; };
 		9ADECEA61BF7EB4800EFD8AD /* RailShuffle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RailShuffle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ADECEAA1BF7EB4800EFD8AD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9ADECEAC1BF7EB4800EFD8AD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -167,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9ACF574D1C2CA2A60077CA28 /* SpriteKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +224,7 @@
 		9ADECE9D1BF7EB4800EFD8AD = {
 			isa = PBXGroup;
 			children = (
+				9ACF574C1C2CA2A60077CA28 /* SpriteKit.framework */,
 				9ADECEA81BF7EB4800EFD8AD /* RailShuffle */,
 				9ADECEA71BF7EB4800EFD8AD /* Products */,
 			);
@@ -232,6 +241,7 @@
 		9ADECEA81BF7EB4800EFD8AD /* RailShuffle */ = {
 			isa = PBXGroup;
 			children = (
+				9ACF574E1C2CAB7C0077CA28 /* pieces.atlas */,
 				9A6DD34D1C021D66007353E7 /* sound */,
 				9A02F8DE1BF8D4EB00BC136E /* HTML */,
 				9ADECEC01BF7EC1900EFD8AD /* images */,
@@ -243,6 +253,8 @@
 				9A02F8DA1BF8AC8C00BC136E /* HelpViewController.m */,
 				9A6DD3641C021DFC007353E7 /* SoundPlayer.h */,
 				9A6DD3651C021DFC007353E7 /* SoundPlayer.m */,
+				9ACF57491C2CA2570077CA28 /* GameScene.h */,
+				9ACF574A1C2CA2570077CA28 /* GameScene.m */,
 				9ADECEB21BF7EB4800EFD8AD /* Main.storyboard */,
 				9A6DE0151BF7F23B009174C4 /* Main_iPad.storyboard */,
 				9ADECEB51BF7EB4800EFD8AD /* Assets.xcassets */,
@@ -427,6 +439,7 @@
 				9ADECEC71BF7EC1900EFD8AD /* intro_iphone.png in Resources */,
 				9A02F9181BF8D4EB00BC136E /* styles-iPhone.css in Resources */,
 				9ADECEDC1BF7ED0C00EFD8AD /* musicbutton.png in Resources */,
+				9ACF574F1C2CAB7C0077CA28 /* pieces.atlas in Resources */,
 				9AE349661C2A0913002E4FCC /* Default-Landscape.png in Resources */,
 				9AA20B341C0A36B5007F4B20 /* orange_paper.png in Resources */,
 				9A02F9001BF8D4EB00BC136E /* bwicon.png in Resources */,
@@ -444,6 +457,7 @@
 				9ADECEAE1BF7EB4800EFD8AD /* AppDelegate.m in Sources */,
 				9ADECEAB1BF7EB4800EFD8AD /* main.m in Sources */,
 				9A6DD3661C021DFC007353E7 /* SoundPlayer.m in Sources */,
+				9ACF574B1C2CA2570077CA28 /* GameScene.m in Sources */,
 				9A02F8DB1BF8AC8C00BC136E /* HelpViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

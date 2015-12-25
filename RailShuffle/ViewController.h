@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <SpriteKit/SpriteKit.h>
+
+@class GameScene;
 
 @interface ViewController : UIViewController {
     
@@ -29,7 +32,10 @@
     float screenWidth;
     
     IBOutlet UIView *levelView;
-
+    
+    // Game scene stuff
+    GameScene *gameScene;
+    IBOutlet SKView *gameView;
 }
 
 -(void)setupButtons;
@@ -41,6 +47,13 @@
 -(IBAction)playButtonPressed:(id)sender;
 -(IBAction)musicButtonPressed:(id)sender;
 -(IBAction)backFromLevelsPressed:(id)sender;
+
+-(IBAction)levelButtonPressed:(id)sender;
+-(void)prepareGameForLevel:(int)lev;
+-(void)fadeInGameScene;
+-(void)fadeOutGameScene;
+
+@property(nonatomic,strong) GameScene *gameScene;
 
 @end
 

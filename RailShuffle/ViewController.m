@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "SoundPlayer.h"
+#import "GameScene.h"
 
 #define SHUFFLE_TIME 0.5
 #define SHUFFLE_WAIT 3.0
@@ -24,8 +25,21 @@
 
 @implementation ViewController
 
+@synthesize gameScene;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Game scene stuff
+    SKView * skView = (SKView *)gameView;
+    skView.showsFPS = NO;
+    skView.showsNodeCount = NO;
+    
+    // Create and configure the scene.
+    self.gameScene = [GameScene sceneWithSize:skView.bounds.size];
+    gameScene.scaleMode = SKSceneScaleModeAspectFill;
+    [skView presentScene:gameScene];
+    
     screenWidth = self.view.frame.size.width;
     
     shuffleLetters = [[NSArray alloc] initWithObjects:letter0,letter1,letter2,letter3,letter4,letter5,letter6, nil];
@@ -184,5 +198,44 @@
                          levelView.hidden = TRUE;
                      }];
 }
+
+-(IBAction)levelButtonPressed:(id)sender
+{
+    [self prepareGameForLevel:(int)((UIButton*)sender).tag];
+}
+
+-(void)prepareGameForLevel:(int)lev
+{
+    [gameScene setupWithLevel:lev-1];
+    [self fadeInGameScene];
+}
+
+-(void)fadeInGameScene
+{
+    [[SoundPlayer sharedSoundPlayer] stopSong];
+    gameView.alpha = 0;
+    gameView.hidden = FALSE;
+    [UIView animateWithDuration:FADE_TIME
+                     animations:^{
+                         gameView.alpha = 1;
+                     }
+                     completion:^(BOOL finished){
+                         levelView.hidden = TRUE;
+                     }];
+}
+
+-(void)fadeOutGameScene
+{
+    [UIView animateWithDuration:FADE_TIME
+                     animations:^{
+                         gameView.alpha = 0;
+                     }
+                     completion:^(BOOL finished){
+                         gameView.hidden = TRUE;
+                     }];
+    [[SoundPlayer sharedSoundPlayer] playSong:3];
+}
+
+
 
 @end

@@ -45,5 +45,6 @@
 -(void)playslide;
 
 -(void)playSong:(int)s;
+-(void)stopSong;
 
 @end
