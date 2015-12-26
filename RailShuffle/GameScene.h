@@ -21,6 +21,7 @@
 #define CONTENT_OBSTACLE 256
 
 #define HOLE_Z -2.0
+#define FRONT_HOLE_Z -1.0
 #define GROUND_Z 0
 #define SELECTION_Z 1.0
 #define DECORATION_Z 2.0
@@ -58,6 +59,8 @@
     SKSpriteNode *selectionNode;
     int selPos;
     int movingPiece;
+    SKSpriteNode *frontHole;
+    int newPos;
     int moveDir;
     float downX,downY;
 }
@@ -65,10 +68,13 @@
 -(void)setupWithLevel:(int)l;
 -(void)hideSelection;
 -(int)getGroundAtH:(int)h andV:(int)v;
+-(void)finishedSliding;
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;
 @property(nonatomic,strong) SKNode *backgroundNode;
 @property(nonatomic,strong) SKSpriteNode *selectionNode;
 @property(nonatomic,strong) NSMutableArray *cartTextures;
 @property(nonatomic,strong) NSMutableArray *carts;
+@property(nonatomic,strong) SKSpriteNode *frontHole;
+
 @end

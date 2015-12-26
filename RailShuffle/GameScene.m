@@ -9,6 +9,8 @@
 #import "GameScene.h"
 #import "Cart.h"
 
+#define SLIDE_TIME 0.16
+
 @implementation GameScene
 
 @synthesize myAtlas;
@@ -16,6 +18,7 @@
 @synthesize selectionNode;
 @synthesize cartTextures;
 @synthesize carts;
+@synthesize frontHole;
 
 static float natureR[3] = {0.8,0.55,0};
 static float natureG[3] = {0.6,0.55,0.93};
@@ -26,6 +29,9 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
 
 static float deltaX[5] = {0,0,0,-90.0,90.0};
 static float deltaY[5] = {0,60.0,-60.0,0,0};
+static int deltaPos[5] = {0,GRIDW,-GRIDW,-1,1};
+static int deltaH[5] = {0,0,0,-1,1};
+static int deltaV[5] = {0,1,-1,0,0};
 
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
@@ -183,7 +189,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
                     holeBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:3+natureType]]];
                 holeBlock.anchorPoint = CGPointMake(0, 0);
                 holeBlock.position = CGPointMake(gridBaseX+90.0*j, gridBaseY+60.0*i);
-                holeBlock.zPosition = GROUND_Z;
+                holeBlock.zPosition = HOLE_Z;
                 holeBlock.name = [NSString stringWithFormat:@"hole%d",ix];
                 [backgroundNode addChild:holeBlock];
             }
@@ -252,6 +258,11 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
     gameState = STATE_PLAYING;
     movingPiece = -1;
+    self.frontHole = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
+    frontHole.anchorPoint = CGPointMake(0, 0);
+    frontHole.zPosition = FRONT_HOLE_Z;
+    frontHole.hidden = TRUE;
+    [backgroundNode addChild:frontHole];
     
     for (Cart *tmpC in carts)
         [tmpC getGoing];
@@ -297,10 +308,161 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
         CGPoint location = [touch locationInNode:backgroundNode];
         if (selPos >= 0)
         {
-            
+            int selH = selPos % GRIDW;
+            int selV = selPos / GRIDW;
+            // Find best direction
+            float dirValues[5];
+            for (int i=0;i<5;i++)
+                dirValues[i] = -10000.0;
+            if (groundMap[selV+1][selH] == GROUND_HOLE)
+                dirValues[1] = location.y-downY;
+            if (groundMap[selV-1][selH] == GROUND_HOLE)
+                dirValues[2] = downY-location.y;
+            if (groundMap[selV][selH-1] == GROUND_HOLE)
+                dirValues[3] = downX-location.x;
+            if (groundMap[selV][selH+1] == GROUND_HOLE)
+                dirValues[4] = location.x-downX;
+            int bestDir = 0;
+            float bestVal = dirValues[0];
+            for (int i=1;i<5;i++)
+                if (dirValues[i] > bestVal)
+                {
+                    bestVal = dirValues[i];
+                    bestDir = i;
+                }
+            moveDir = bestDir;
+            movingPiece = selPos;
+            newPos = movingPiece+deltaPos[moveDir];
             [self hideSelection];
+            
+            CGVector moveVec = CGVectorMake(deltaX[moveDir], deltaY[moveDir]);
+            
+            // Create new hole
+            SKSpriteNode *newHoleS;
+            if (moveDir == 1) // Up
+            {
+                if (groundMap[selV][selH-1] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
+                else
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]]];
+            }
+            else if (moveDir == 2) // Down
+            {
+                if (groundMap[selV+1][selH] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"black"]];
+                else if (groundMap[selV][selH-1] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
+                else
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]]];
+            }
+            else if (moveDir == 3) // Left
+            {
+                if (groundMap[selV+1][selH] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"black"]];
+                else
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]]];
+            }
+            else if (moveDir == 4) // Right
+            {
+                if (groundMap[selV+1][selH] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"black"]];
+                else if (groundMap[selV][selH-1] == GROUND_HOLE)
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
+                else
+                    newHoleS = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]]];
+            }
+            newHoleS.anchorPoint = CGPointMake(0, 0);
+            newHoleS.position = CGPointMake(gridBaseX+90.0*selH, gridBaseY+60.0*selV);
+            newHoleS.zPosition = HOLE_Z;
+            newHoleS.name = [NSString stringWithFormat:@"hole%d",movingPiece];
+            [backgroundNode addChild:newHoleS];
+            
+            // Possible cleanup in front, if there is already a hole
+            if (moveDir != 2 && groundMap[selV-1][selH] == GROUND_HOLE)
+            {
+                SKSpriteNode *inFrontS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"hole%d",movingPiece-GRIDW]];
+                inFrontS.texture = [myAtlas textureNamed:@"black"];
+            }
+            // Possible cleanup to the right, if there is already a hole
+            if (moveDir != 4 && groundMap[selV][selH+1] == GROUND_HOLE && groundMap[selV+1][selH+1] != GROUND_HOLE)
+            {
+                SKSpriteNode *toRightS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"hole%d",movingPiece+1]];
+                toRightS.texture = [myAtlas textureNamed:[edgeNames objectAtIndex:natureType]];
+            }
+            
+            // Duplication of ground value during sliding, to help carts
+            groundMap[selV+deltaV[moveDir]][selH+deltaH[moveDir]] = groundMap[selV][selH];
+            
+            SKSpriteNode *groundS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"ground%d",movingPiece]];
+            groundS.name = [NSString stringWithFormat:@"ground%d",newPos];
+            
+            // Check for rails
+            SKSpriteNode *railS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"rail%d",movingPiece]];
+            if (railS != NULL)
+            {
+                railS.name = [NSString stringWithFormat:@"rail%d",newPos];
+                [railS runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            }
+            // Check for obstacle
+            SKSpriteNode *obstacleS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"obstacle%d",movingPiece]];
+            if (obstacleS != NULL)
+            {
+                obstacleS.name = [NSString stringWithFormat:@"obstacle%d",newPos];
+                obstacleS.zPosition = OBSTACLE_Z-(selV+deltaV[moveDir]);
+                [obstacleS runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            }
+            // Check for decoration
+            SKSpriteNode *decorationS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"decoration%d",movingPiece]];
+            if (decorationS != NULL)
+            {
+                decorationS.name = [NSString stringWithFormat:@"decoration%d",newPos];
+                [decorationS runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            }
+            // Check for bag
+            SKSpriteNode *bagS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"bag%d",movingPiece]];
+            if (bagS != NULL)
+            {
+                bagS.name = [NSString stringWithFormat:@"bag%d",newPos];
+                bagS.zPosition = OBSTACLE_Z-(selV+deltaV[moveDir]);
+                [bagS runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            }
+            
+            // Front hole
+            frontHole.position = CGPointMake(gridBaseX+90.0*selH, gridBaseY+60.0*(selV-1));
+            frontHole.hidden = FALSE;
+          
+            [groundS runAction:[SKAction sequence:@[[SKAction moveBy:moveVec duration:SLIDE_TIME],[SKAction runBlock:^{[self finishedSliding];}]]]];
+            [frontHole runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
         }
     }
+}
+
+-(void)finishedSliding
+{
+    int originH = movingPiece % GRIDW;
+    int originV = movingPiece / GRIDW;
+    groundMap[originV][originH] = GROUND_HOLE;
+    SKSpriteNode *holeS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"hole%d",newPos]];
+    if (holeS != NULL)
+        [holeS removeFromParent];
+    // Possible cleanup in front
+    if (moveDir != 1 && groundMap[(newPos/GRIDW)-1][newPos%GRIDW] == GROUND_HOLE)
+    {
+        SKSpriteNode *inFrontS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"hole%d",newPos-GRIDW]];
+        if (groundMap[(newPos/GRIDW)-1][(newPos%GRIDW)-1] == GROUND_HOLE)
+            inFrontS.texture = [myAtlas textureNamed:[edgeNames objectAtIndex:natureType]];
+        else
+            inFrontS.texture = [myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]];
+    }
+    // Possible cleanup to the right
+    if (moveDir != 3 && groundMap[(newPos/GRIDW)][(newPos%GRIDW)+1] == GROUND_HOLE && groundMap[(newPos/GRIDW)+1][(newPos%GRIDW)+1] != GROUND_HOLE)
+    {
+        SKSpriteNode *toRightS = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"hole%d",newPos+1]];
+        toRightS.texture = [myAtlas textureNamed:[edgeNames objectAtIndex:natureType+3]];
+    }
+    frontHole.hidden = TRUE;
+    movingPiece = -1;
 }
 
 -(int)getGroundAtH:(int)h andV:(int)v
