@@ -7,27 +7,15 @@
 //
 
 #import "GameScene.h"
-
-#define GROUND_HOLE 0
-#define GROUND_FIXED 32
-#define GROUND_MOBILE 64
-#define GROUND_SELECTED 96
-
-#define CONTENT_RAIL 128
-#define CONTENT_OBSTACLE 256
-
-#define HOLE_Z -2.0
-#define GROUND_Z 0
-#define SELECTION_Z 1.0
-#define DECORATION_Z 2.0
-#define RAIL_Z 3.0
-#define OBSTACLE_Z 50.0
+#import "Cart.h"
 
 @implementation GameScene
 
 @synthesize myAtlas;
 @synthesize backgroundNode;
 @synthesize selectionNode;
+@synthesize cartTextures;
+@synthesize carts;
 
 static float natureR[3] = {0.8,0.55,0};
 static float natureG[3] = {0.6,0.55,0.93};
@@ -35,6 +23,9 @@ static float natureB[3] = {0.2,0.55,0};
 
 static float obstacle_adjX[7] = {5,10,14,8,10,7,8};
 static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
+
+static float deltaX[5] = {0,0,0,-90.0,90.0};
+static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
@@ -74,6 +65,10 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
                       @"edge_orange1",@"edge_gray1",@"edge_green1"];
         ornamentNames = @[@" ",@"deco_grass0",@"deco_gravel0",@"deco_gravel1",@"deco_gravel2",
                           @"deco_leaves0",@"deco_leaves1",@"deco_water0",@"deco_water1"];
+        self.cartTextures = [NSMutableArray arrayWithCapacity:10];
+        for (int i=0;i<10;i++)
+            [cartTextures addObject:[myAtlas textureNamed:[NSString stringWithFormat:@"cart%d",i]]];
+        self.carts = [NSMutableArray arrayWithCapacity:10];
     }
     return self;
 }
@@ -115,7 +110,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
     int p = 0;
     while (p < [row length])
     {
-        SKSpriteNode *bag = [SKSpriteNode spriteNodeWithImageNamed:@"moneybag"];
+        SKSpriteNode *bag = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"moneybag"]];
         int xp = [row characterAtIndex:p]-'0'+2;
         int yp = GRIDH-([row characterAtIndex:p+2]-'0')-2;
         
@@ -152,7 +147,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
             int ix = i*GRIDW+j;
             if (groundMap[i][j] & GROUND_MOBILE)
             {
-                SKSpriteNode *groundBlock = [SKSpriteNode spriteNodeWithImageNamed:[groundNames objectAtIndex:natureType]];
+                SKSpriteNode *groundBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[groundNames objectAtIndex:natureType]]];
                 groundBlock.anchorPoint = CGPointMake(0, 0);
                 groundBlock.position = CGPointMake(gridBaseX+90.0*j, gridBaseY+60.0*i);
                 groundBlock.zPosition = GROUND_Z;
@@ -161,7 +156,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
             }
             if (groundMap[i][j] & CONTENT_RAIL)
             {
-                SKSpriteNode *railBlock = [SKSpriteNode spriteNodeWithImageNamed:[NSString stringWithFormat:@"rails%d",groundMap[i][j]&15]];
+                SKSpriteNode *railBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[NSString stringWithFormat:@"rails%d",groundMap[i][j]&15]]];
                 railBlock.anchorPoint = CGPointMake(0, 0);
                 railBlock.position = CGPointMake(gridBaseX+90.0*j, gridBaseY+60.0*i);
                 railBlock.zPosition = RAIL_Z;
@@ -170,7 +165,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
             }
             if (groundMap[i][j] & CONTENT_OBSTACLE)
             {
-                SKSpriteNode *obstacle = [SKSpriteNode spriteNodeWithImageNamed:[obstacleNames objectAtIndex:groundMap[i][j]&15]];
+                SKSpriteNode *obstacle = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[obstacleNames objectAtIndex:groundMap[i][j]&15]]];
                 obstacle.anchorPoint = CGPointMake(0, 0);
                 obstacle.position = CGPointMake(gridBaseX+90.0*j+obstacle_adjX[groundMap[i][j]&15], gridBaseY+60.0*i+obstacle_adjY[groundMap[i][j]&15]);
                 obstacle.zPosition = OBSTACLE_Z-i;
@@ -181,11 +176,11 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
             {
                 SKSpriteNode *holeBlock;
                 if (groundMap[i+1][j] == GROUND_HOLE)
-                    holeBlock = [SKSpriteNode spriteNodeWithImageNamed:@"black"];
+                    holeBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"black"]];
                 else if (groundMap[i][j-1] == GROUND_HOLE)
-                    holeBlock = [SKSpriteNode spriteNodeWithImageNamed:[edgeNames objectAtIndex:natureType]];
+                    holeBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
                 else
-                    holeBlock = [SKSpriteNode spriteNodeWithImageNamed:[edgeNames objectAtIndex:3+natureType]];
+                    holeBlock = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:3+natureType]]];
                 holeBlock.anchorPoint = CGPointMake(0, 0);
                 holeBlock.position = CGPointMake(gridBaseX+90.0*j, gridBaseY+60.0*i);
                 holeBlock.zPosition = GROUND_Z;
@@ -209,7 +204,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
             if (groundMap[yp][xp] != GROUND_HOLE && (groundMap[yp][xp] & (CONTENT_OBSTACLE | CONTENT_RAIL | 31)) == 0) // Empty
             {
                 groundMap[yp][xp] |= j;
-                SKSpriteNode *deco = [SKSpriteNode spriteNodeWithImageNamed:[ornamentNames objectAtIndex:j]];
+                SKSpriteNode *deco = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[ornamentNames objectAtIndex:j]]];
                 deco.anchorPoint = CGPointMake(0, 0);
                 deco.position = CGPointMake(gridBaseX+90.0*xp, gridBaseY+60.0*yp);
                 deco.zPosition = DECORATION_Z;
@@ -222,7 +217,7 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
     }
     
     // Set top decoration
-    SKSpriteNode *topDeco = [SKSpriteNode spriteNodeWithImageNamed:[topNames objectAtIndex:natureType]];
+    SKSpriteNode *topDeco = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[topNames objectAtIndex:natureType]]];
     topDeco.anchorPoint = CGPointMake(0, 1.0);
     topDeco.xScale = topXScale;
     topDeco.yScale = 1.0;
@@ -231,20 +226,86 @@ static float obstacle_adjY[7] = {10,10,1,4,0,5,6};
     [backgroundNode addChild:topDeco];
     
     // Highlight
-    selectionNode = [SKSpriteNode spriteNodeWithImageNamed:@"block_highlight"];
+    selectionNode = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"block_highlight"]];
     selectionNode.alpha = 0.5;
     selectionNode.anchorPoint = CGPointMake(0, 0);
     selectionNode.zPosition = SELECTION_Z;
     [backgroundNode addChild:selectionNode];
     [self hideSelection];
     
+    // Carts
+    p = 0;
+    numCarts = 0;
+    row = [levRows objectAtIndex:11];
+    [carts removeAllObjects];
+    while (p < [row length])
+    {
+        int xp = [row characterAtIndex:p]-'0'+2;
+        int yp = GRIDH-([row characterAtIndex:p+2]-'0')-2;
+        int dir = [row characterAtIndex:p+4]-'0';
+        Cart *newCart = [[Cart alloc] initWithOwner:self xPos:xp yPos:yp andDir:dir];
+        newCart.holderNode.position = CGPointMake(gridBaseX+90.0*xp, gridBaseY+60.0*yp);
+        p+=6;
+        [carts addObject:newCart];
+        numCarts++;
+    }
+
+    gameState = STATE_PLAYING;
+    movingPiece = -1;
     
+    for (Cart *tmpC in carts)
+        [tmpC getGoing];
 }
 
 -(void)hideSelection
 {
     selectionNode.hidden = TRUE;
     selPos = -1;
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    /* Called when a touch begins */
+    
+    if (gameState == STATE_PLAYING && movingPiece < 0)
+    {
+        UITouch *touch = [touches anyObject];
+        CGPoint location = [touch locationInNode:backgroundNode];
+        int h = (int)((location.x-gridBaseX)/90.0);
+        int v = (int)((location.y-gridBaseY)/60.0);
+        if (h >= 2 && h < GRIDW-2 && v >= 1 && v < GRIDH-1)
+        {
+            if ((groundMap[v][h] & GROUND_MOBILE) && (groundMap[v+1][h]==0 || groundMap[v-1][h]==0 ||
+                                                      groundMap[v][h+1]==0 || groundMap[v][h-1]==0))
+            {
+                selectionNode.position = CGPointMake(gridBaseX+90.0*h, gridBaseY+60.0*v);
+                selectionNode.hidden = FALSE;
+                selPos = v*GRIDW+h;
+                downX = location.x;
+                downY = location.y;
+            }
+            else
+                [self hideSelection];
+        }
+    }
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (gameState == STATE_PLAYING)
+    {
+        UITouch *touch = [touches anyObject];
+        CGPoint location = [touch locationInNode:backgroundNode];
+        if (selPos >= 0)
+        {
+            
+            [self hideSelection];
+        }
+    }
+}
+
+-(int)getGroundAtH:(int)h andV:(int)v
+{
+    return groundMap[v][h];
 }
 
 

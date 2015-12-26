@@ -94,6 +94,9 @@
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="musicButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AwE-F4-OwR"/>
+                                        </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="checkbox.png" id="Nhr-r6-2KA">
                                         <rect key="frame" x="45" y="10" width="78" height="82"/>
@@ -798,6 +801,7 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="checkbox" destination="Nhr-r6-2KA" id="0SA-9w-YDq"/>
                         <outlet property="gameView" destination="o5H-Ee-HoC" id="wlv-ZI-y0P"/>
                         <outlet property="helpButton" destination="cIf-ID-84g" id="4J4-3p-HMv"/>
                         <outlet property="letter0" destination="vRv-6F-vHA" id="hG9-Tc-yPs"/>
