@@ -206,7 +206,7 @@
 
 -(void)prepareGameForLevel:(int)lev
 {
-    [gameScene setupWithLevel:lev-1];
+    [gameScene setupWithLevel:lev];
     [self fadeInGameScene];
 }
 
