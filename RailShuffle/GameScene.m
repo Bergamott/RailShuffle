@@ -8,6 +8,8 @@
 
 #import "GameScene.h"
 #import "Cart.h"
+#import "ViewController.h"
+#import "SoundPlayer.h"
 
 #define SLIDE_TIME 0.16
 #define BAR_MAX_SCALE 27.7
@@ -26,6 +28,8 @@
 @synthesize clockwiseToVerticalCarts;
 @synthesize counterClockwiseToHorizontalCarts;
 @synthesize clockwiseToHorizontalCarts;
+
+@synthesize owner;
 
 static float natureR[3] = {0.8,0.55,0};
 static float natureG[3] = {0.6,0.55,0.93};
@@ -72,8 +76,12 @@ static int deltaV[5] = {0,1,-1,0,0};
         
         [self addChild:backgroundNode];
         
+        // Preload sounds
+        [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
+        
         topNames = @[@"top_desert",@"top_rocks",@"top_vegetation"];
         groundNames = @[@"block_orange",@"block_gray",@"block_green"];
+        flatNames = @[@"flat_orange",@"flat_gray",@"flat_green"];
         obstacleNames = @[@"obst_cactus0",@"obst_cactus1",@"obst_crate0",@"obst_crate1",
                           @"obst_masonry",@"obst_rock0",@"obst_stump0"];
         edgeNames = @[@"edge_orange0",@"edge_gray0",@"edge_green0",
@@ -105,9 +113,9 @@ static int deltaV[5] = {0,1,-1,0,0};
     SKSpriteNode *tmpS0 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_exit"]];
     tmpS0.anchorPoint = CGPointMake(0,0);
     [exitSignHolder addChild:tmpS0];
-    exitCross = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"exit"]];
+    exitCross = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"x"]];
     exitCross.anchorPoint = CGPointMake(0,0);
-    exitCross.position = CGPointMake(14.0,18.0);
+    exitCross.position = CGPointMake(18.0,22.0);
     [exitSignHolder addChild:exitCross];
     
     levelSignHolder = [SKNode node];
@@ -299,6 +307,13 @@ static int deltaV[5] = {0,1,-1,0,0};
                 [backgroundNode addChild:holeBlock];
             }
         }
+    // Flat ground cover
+    SKSpriteNode *groundCover = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[flatNames objectAtIndex:natureType]]];
+    groundCover.anchorPoint = CGPointMake(0, 0);
+    groundCover.xScale = GRIDW;
+    groundCover.position = CGPointMake(gridBaseX, gridBaseY);
+    groundCover.zPosition = GROUND_Z;
+    [backgroundNode addChild:groundCover];
     
     // Ground ornaments
     row = [levRows objectAtIndex:14];
@@ -380,6 +395,7 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)animateSignsIn
 {
+    exitSignPressed = FALSE;
     [exitSignHolder runAction:[SKAction moveTo:exitSignIn duration:SIGN_ANIMATION_INTERVAL]];
     [levelSignHolder runAction:[SKAction moveTo:levelSignIn duration:SIGN_ANIMATION_INTERVAL]];
     [timerSignHolder runAction:[SKAction sequence:@[[SKAction moveTo:timerSignIn duration:SIGN_ANIMATION_INTERVAL],
@@ -388,9 +404,9 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)animateSignsOut
 {
-    [exitSignHolder runAction:[SKAction moveTo:exitSignIn duration:SIGN_ANIMATION_INTERVAL]];
-    [levelSignHolder runAction:[SKAction moveTo:levelSignIn duration:SIGN_ANIMATION_INTERVAL]];
-    [timerSignHolder runAction:[SKAction moveTo:timerSignIn duration:SIGN_ANIMATION_INTERVAL]];
+    [exitSignHolder runAction:[SKAction moveTo:exitSignOut duration:SIGN_ANIMATION_INTERVAL]];
+    [levelSignHolder runAction:[SKAction moveTo:levelSignOut duration:SIGN_ANIMATION_INTERVAL]];
+    [timerSignHolder runAction:[SKAction moveTo:timerSignOut duration:SIGN_ANIMATION_INTERVAL]];
 }
 
 -(void)hideSelection
@@ -402,9 +418,9 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
+    UITouch *touch = [touches anyObject];
     if (gameState == STATE_PLAYING && movingPiece < 0)
     {
-        UITouch *touch = [touches anyObject];
         CGPoint location = [touch locationInNode:backgroundNode];
         int h = (int)((location.x-gridBaseX)/90.0);
         int v = (int)((location.y-gridBaseY)/60.0);
@@ -423,13 +439,19 @@ static int deltaV[5] = {0,1,-1,0,0};
                 [self hideSelection];
         }
     }
+    CGPoint exitLocation = [touch locationInNode:exitCross];
+    if (exitLocation.x >= 0 && exitLocation.x < 40.0 && exitLocation.y >= 0 && exitLocation.y < 44.0)
+    {
+        exitCross.texture = [myAtlas textureNamed:@"x_highlight"];
+        exitSignPressed = TRUE;
+    }
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
+    UITouch *touch = [touches anyObject];
     if (gameState == STATE_PLAYING)
     {
-        UITouch *touch = [touches anyObject];
         CGPoint location = [touch locationInNode:backgroundNode];
         if (selPos >= 0)
         {
@@ -572,6 +594,14 @@ static int deltaV[5] = {0,1,-1,0,0};
             [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
         }
     }
+    if (exitSignPressed)
+    {
+        exitCross.texture = [myAtlas textureNamed:@"x"];
+        exitSignPressed = FALSE;
+        [[SoundPlayer sharedSoundPlayer] playClick];
+        [self exitPressed];
+    }
+
 }
 
 -(void)finishedSliding
@@ -604,6 +634,14 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(int)getGroundAtH:(int)h andV:(int)v
 {
     return groundMap[v][h];
+}
+
+-(void)exitPressed
+{
+    [self animateSignsOut];
+    for (Cart *tmpC in carts)
+        [tmpC haltMotion];
+    [owner fadeOutGameScene];
 }
 
 

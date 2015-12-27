@@ -30,6 +30,7 @@
 -(void)takeNextStep;
 -(void)goStraight;
 -(void)comeToAHalt;
+-(void)goIntoHole;
 -(void)cartStopped;
 -(void)goCounterClockwiseDown;
 -(void)goCounterClockwiseRight;
@@ -39,6 +40,8 @@
 -(void)goClockwiseRight;
 -(void)goClockwiseUp;
 -(void)goClockwiseLeft;
+
+-(void)haltMotion;
 
 @property(nonatomic,strong) SKNode *holderNode;
 @property(nonatomic) int xp;

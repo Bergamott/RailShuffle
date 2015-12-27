@@ -11,6 +11,7 @@
 
 #define BLOCK_INTERVAL 0.5
 #define CURVE_INTERVAL 0.4
+#define FALL_INTERVAL 1.0
 
 @implementation Cart
 
@@ -60,7 +61,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
     }
     else if (nextGround == GROUND_HOLE) // Hole
     {
-        
+        [self goIntoHole];
     }
     else if (nextGround & CONTENT_RAIL) // Rails
     {
@@ -150,6 +151,8 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
     {
         [self comeToAHalt];
     }
+    xp += deltaH[dir];
+    yp += deltaV[dir];
 }
 
 -(void)goStraight
@@ -178,10 +181,18 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
     [sprite runAction:[SKAction sequence:@[moveAction,[SKAction runBlock:^{[self cartStopped];}]]]];
 }
 
+-(void)goIntoHole
+{
+    newDir = 0;
+    SKAction *moveAction = [SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5 - 10.0) duration:BLOCK_INTERVAL];
+    moveAction.timingMode = SKActionTimingEaseOut;
+    SKAction *fallAction = [SKAction moveBy:CGVectorMake(0, -200.0) duration:FALL_INTERVAL];
+    fallAction.timingMode = SKActionTimingEaseOut;
+    [sprite runAction:[SKAction sequence:@[moveAction,[SKAction runBlock:^{holderNode.zPosition = FALL_Z;}],fallAction,[SKAction runBlock:^{[self cartStopped];}]]]];
+}
+
 -(void)cartStopped
 {
-    xp += deltaH[dir];
-    yp += deltaV[dir];
     
     
 }
@@ -280,10 +291,15 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 //    NSLog(@"Holder node x,y: %f,%f, sprite x,y: %f,%f",holderNode.position.x,holderNode.position.y,sprite.position.x,sprite.position.y);
     holderNode.position = CGPointMake(holderNode.position.x+deltaX[dir], holderNode.position.y+deltaY[dir]);
     sprite.position = CGPointMake(sprite.position.x-deltaX[dir], sprite.position.y-deltaY[dir]);
-    xp += deltaH[dir];
-    yp += deltaV[dir];
     dir = newDir;
-    [self takeNextStep];
+    if (newDir > 0)
+        [self takeNextStep];
 }
+
+-(void)haltMotion
+{
+    newDir = 0;
+}
+
 
 @end

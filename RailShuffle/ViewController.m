@@ -39,6 +39,7 @@
     self.gameScene = [GameScene sceneWithSize:skView.bounds.size];
     gameScene.scaleMode = SKSceneScaleModeAspectFill;
     [skView presentScene:gameScene];
+    gameScene.owner = self;
     
     screenWidth = self.view.frame.size.width;
     
@@ -226,6 +227,7 @@
 
 -(void)fadeOutGameScene
 {
+    levelView.hidden = TRUE;
     [UIView animateWithDuration:FADE_TIME
                      animations:^{
                          gameView.alpha = 0;

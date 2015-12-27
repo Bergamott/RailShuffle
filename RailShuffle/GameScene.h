@@ -22,6 +22,7 @@
 
 #define HOLE_Z -2.0
 #define FRONT_HOLE_Z -1.0
+#define FALL_Z -1.0
 #define GROUND_Z 0
 #define SELECTION_Z 1.0
 #define DECORATION_Z 2.0
@@ -30,6 +31,8 @@
 
 #define STATE_PREPARE 0
 #define STATE_PLAYING 1
+
+@class ViewController;
 
 @interface GameScene : SKScene {
     
@@ -51,6 +54,7 @@
     NSArray *topNames;
     NSArray *groundNames;
     NSArray *edgeNames;
+    NSArray *flatNames;
     NSArray *obstacleNames;
     NSArray *ornamentNames;
     NSMutableArray *cartTextures;
@@ -76,6 +80,7 @@
     SKSpriteNode *digit1;
     SKNode *timerSignHolder;
     SKSpriteNode *timerBar;
+    BOOL exitSignPressed;
     
     CGPoint exitSignOut;
     CGPoint exitSignIn;
@@ -83,6 +88,8 @@
     CGPoint levelSignIn;
     CGPoint timerSignOut;
     CGPoint timerSignIn;
+    
+    ViewController *owner;
 }
 
 -(void)prepareSigns;
@@ -93,6 +100,7 @@
 -(void)hideSelection;
 -(int)getGroundAtH:(int)h andV:(int)v;
 -(void)finishedSliding;
+-(void)exitPressed;
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;
 @property(nonatomic,strong) SKNode *backgroundNode;
@@ -104,5 +112,7 @@
 @property(nonatomic,strong) NSArray *clockwiseToVerticalCarts;
 @property(nonatomic,strong) NSArray *counterClockwiseToHorizontalCarts;
 @property(nonatomic,strong) NSArray *clockwiseToHorizontalCarts;
+
+@property(nonatomic,strong) ViewController *owner;
 
 @end
