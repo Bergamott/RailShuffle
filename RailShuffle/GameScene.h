@@ -35,6 +35,7 @@
     
     SKTextureAtlas *myAtlas;
     SKNode *backgroundNode;
+    BOOL isPad;
     
     int level;
     int natureType;
@@ -53,6 +54,10 @@
     NSArray *obstacleNames;
     NSArray *ornamentNames;
     NSMutableArray *cartTextures;
+    NSArray *counterClockwiseToVerticalCarts;
+    NSArray *clockwiseToVerticalCarts;
+    NSArray *counterClockwiseToHorizontalCarts;
+    NSArray *clockwiseToHorizontalCarts;
     
     NSMutableArray *carts;
     
@@ -63,9 +68,28 @@
     int newPos;
     int moveDir;
     float downX,downY;
+    
+    SKNode *exitSignHolder;
+    SKSpriteNode *exitCross;
+    SKNode *levelSignHolder;
+    SKSpriteNode *digit0;
+    SKSpriteNode *digit1;
+    SKNode *timerSignHolder;
+    SKSpriteNode *timerBar;
+    
+    CGPoint exitSignOut;
+    CGPoint exitSignIn;
+    CGPoint levelSignOut;
+    CGPoint levelSignIn;
+    CGPoint timerSignOut;
+    CGPoint timerSignIn;
 }
 
+-(void)prepareSigns;
 -(void)setupWithLevel:(int)l;
+-(void)startLevel;
+-(void)animateSignsIn;
+-(void)animateSignsOut;
 -(void)hideSelection;
 -(int)getGroundAtH:(int)h andV:(int)v;
 -(void)finishedSliding;
@@ -76,5 +100,9 @@
 @property(nonatomic,strong) NSMutableArray *cartTextures;
 @property(nonatomic,strong) NSMutableArray *carts;
 @property(nonatomic,strong) SKSpriteNode *frontHole;
+@property(nonatomic,strong) NSArray *counterClockwiseToVerticalCarts;
+@property(nonatomic,strong) NSArray *clockwiseToVerticalCarts;
+@property(nonatomic,strong) NSArray *counterClockwiseToHorizontalCarts;
+@property(nonatomic,strong) NSArray *clockwiseToHorizontalCarts;
 
 @end

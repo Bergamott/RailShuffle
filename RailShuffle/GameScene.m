@@ -10,6 +10,9 @@
 #import "Cart.h"
 
 #define SLIDE_TIME 0.16
+#define BAR_MAX_SCALE 27.7
+
+#define SIGN_ANIMATION_INTERVAL 0.8
 
 @implementation GameScene
 
@@ -19,6 +22,10 @@
 @synthesize cartTextures;
 @synthesize carts;
 @synthesize frontHole;
+@synthesize counterClockwiseToVerticalCarts;
+@synthesize clockwiseToVerticalCarts;
+@synthesize counterClockwiseToHorizontalCarts;
+@synthesize clockwiseToHorizontalCarts;
 
 static float natureR[3] = {0.8,0.55,0};
 static float natureG[3] = {0.6,0.55,0.93};
@@ -41,6 +48,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         backgroundNode = [SKNode node];
         if (size.height > 330) // iPad screen
         {
+            isPad = TRUE;
             yScale = 1.0;
             xScale = 1.0;
             gridBaseX = 62.0-180.0;
@@ -48,6 +56,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         }
         else
         {
+            isPad = FALSE;
             if (size.width > 480) // 4-inch screen
                 xScale = 0.49;
             else // 3.5-inch screen
@@ -75,8 +84,104 @@ static int deltaV[5] = {0,1,-1,0,0};
         for (int i=0;i<10;i++)
             [cartTextures addObject:[myAtlas textureNamed:[NSString stringWithFormat:@"cart%d",i]]];
         self.carts = [NSMutableArray arrayWithCapacity:10];
+        counterClockwiseToVerticalCarts = @[[cartTextures objectAtIndex:5],[cartTextures objectAtIndex:4],
+                                            [cartTextures objectAtIndex:3],[cartTextures objectAtIndex:2],[cartTextures objectAtIndex:1],[cartTextures objectAtIndex:0]];
+        clockwiseToVerticalCarts = @[[cartTextures objectAtIndex:5],[cartTextures objectAtIndex:6],
+                                            [cartTextures objectAtIndex:7],[cartTextures objectAtIndex:8],[cartTextures objectAtIndex:9],[cartTextures objectAtIndex:0]];
+        counterClockwiseToHorizontalCarts = @[[cartTextures objectAtIndex:0],[cartTextures objectAtIndex:9],
+                                            [cartTextures objectAtIndex:8],[cartTextures objectAtIndex:7],[cartTextures objectAtIndex:6],[cartTextures objectAtIndex:5]];
+        clockwiseToHorizontalCarts = @[[cartTextures objectAtIndex:0],[cartTextures objectAtIndex:1],
+                                     [cartTextures objectAtIndex:2],[cartTextures objectAtIndex:3],[cartTextures objectAtIndex:4],[cartTextures objectAtIndex:5]];
+        
+        [self prepareSigns];
     }
     return self;
+}
+
+-(void)prepareSigns
+{
+    exitSignHolder = [SKNode node];
+    exitSignHolder.zPosition = 100.0;
+    SKSpriteNode *tmpS0 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_exit"]];
+    tmpS0.anchorPoint = CGPointMake(0,0);
+    [exitSignHolder addChild:tmpS0];
+    exitCross = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"exit"]];
+    exitCross.anchorPoint = CGPointMake(0,0);
+    exitCross.position = CGPointMake(14.0,18.0);
+    [exitSignHolder addChild:exitCross];
+    
+    levelSignHolder = [SKNode node];
+    levelSignHolder.zPosition = 100.0;
+    SKSpriteNode *tmpS1 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_level"]];
+    tmpS1.anchorPoint = CGPointMake(0,1.0);
+    [levelSignHolder addChild:tmpS1];
+    digit0 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"0"]];
+    digit0.anchorPoint = CGPointMake(0,0);
+    digit0.position = CGPointMake(158.0,-76.0);
+    [levelSignHolder addChild:digit0];
+    digit1 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"0"]];
+    digit1.anchorPoint = CGPointMake(0,0);
+    digit1.position = CGPointMake(186.0,-76.0);
+    [levelSignHolder addChild:digit1];
+    
+    timerSignHolder = [SKNode node];
+    timerSignHolder.zPosition = 100.0;
+    SKSpriteNode *tmpS3 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"beige_strip"]];
+    tmpS3.anchorPoint = CGPointMake(0,0);
+    tmpS3.xScale = BAR_MAX_SCALE;
+    tmpS3.yScale = 1.3;
+    tmpS3.position = CGPointMake(38.0, -66.0);
+    [timerSignHolder addChild:tmpS3];
+    timerBar = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"white_strip"]];
+    timerBar.anchorPoint = CGPointMake(0,0);
+    timerBar.xScale = BAR_MAX_SCALE;
+    timerBar.yScale = 1.3;
+    timerBar.position = CGPointMake(38.0, -66.0);
+    [timerSignHolder addChild:timerBar];
+    SKSpriteNode *tmpS2 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_time"]];
+    tmpS2.anchorPoint = CGPointMake(0,1.0);
+    [timerSignHolder addChild:tmpS2];
+    
+    if (isPad)
+    {
+        exitSignIn = CGPointMake(2,0);
+        levelSignIn = CGPointMake(self.size.width-260.0,self.size.height);
+        timerSignIn = CGPointMake(10.0,self.size.height);
+        
+        exitSignOut = CGPointMake(2,-86.0);
+        levelSignOut = CGPointMake(self.size.width-260.0,self.size.height+110.0);
+        timerSignOut = CGPointMake(10.0,self.size.height+96.0);
+        
+        exitSignHolder.position = exitSignOut;
+        levelSignHolder.position = levelSignOut;
+        timerSignHolder.position = timerSignOut;
+    }
+    else
+    {
+        exitSignIn = CGPointMake(12.0,0);
+        levelSignIn = CGPointMake(6.0,self.size.height);
+        timerSignIn = CGPointMake(0,66.0);
+        exitSignOut = CGPointMake(12.0,-60.0);
+        levelSignOut = CGPointMake(6.0,self.size.height+60.0);
+        timerSignOut = CGPointMake(-64.0,66.0);
+        
+        exitSignHolder.xScale = 0.7;
+        exitSignHolder.yScale = 0.7;
+        exitSignHolder.position = exitSignOut;
+
+        levelSignHolder.xScale = 0.52;
+        levelSignHolder.yScale = 0.52;
+        levelSignHolder.position = levelSignOut;
+        
+        timerSignHolder.zRotation = 1.57;
+        timerSignHolder.xScale = 0.64;
+        timerSignHolder.yScale = 0.64;
+        timerSignHolder.position = timerSignOut;
+
+    }
+    [self addChild:exitSignHolder];
+    [self addChild:levelSignHolder];
+    [self addChild:timerSignHolder];
 }
 
 -(void)setupWithLevel:(int)l
@@ -205,7 +310,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         int n = 0;
         while (n < k)
         {
-            int xp = arc4random()%GRIDW;
+            int xp = 1+(arc4random()%(GRIDW-2));
             int yp = arc4random()%GRIDH;
             if (groundMap[yp][xp] != GROUND_HOLE && (groundMap[yp][xp] & (CONTENT_OBSTACLE | CONTENT_RAIL | 31)) == 0) // Empty
             {
@@ -256,7 +361,6 @@ static int deltaV[5] = {0,1,-1,0,0};
         numCarts++;
     }
 
-    gameState = STATE_PLAYING;
     movingPiece = -1;
     self.frontHole = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
     frontHole.anchorPoint = CGPointMake(0, 0);
@@ -264,8 +368,29 @@ static int deltaV[5] = {0,1,-1,0,0};
     frontHole.hidden = TRUE;
     [backgroundNode addChild:frontHole];
     
+    [self animateSignsIn];
+}
+
+-(void)startLevel
+{
+    gameState = STATE_PLAYING;
     for (Cart *tmpC in carts)
         [tmpC getGoing];
+}
+
+-(void)animateSignsIn
+{
+    [exitSignHolder runAction:[SKAction moveTo:exitSignIn duration:SIGN_ANIMATION_INTERVAL]];
+    [levelSignHolder runAction:[SKAction moveTo:levelSignIn duration:SIGN_ANIMATION_INTERVAL]];
+    [timerSignHolder runAction:[SKAction sequence:@[[SKAction moveTo:timerSignIn duration:SIGN_ANIMATION_INTERVAL],
+                                                    [SKAction runBlock:^{[self startLevel];}]]]];
+}
+
+-(void)animateSignsOut
+{
+    [exitSignHolder runAction:[SKAction moveTo:exitSignIn duration:SIGN_ANIMATION_INTERVAL]];
+    [levelSignHolder runAction:[SKAction moveTo:levelSignIn duration:SIGN_ANIMATION_INTERVAL]];
+    [timerSignHolder runAction:[SKAction moveTo:timerSignIn duration:SIGN_ANIMATION_INTERVAL]];
 }
 
 -(void)hideSelection
@@ -433,6 +558,17 @@ static int deltaV[5] = {0,1,-1,0,0};
           
             [groundS runAction:[SKAction sequence:@[[SKAction moveBy:moveVec duration:SLIDE_TIME],[SKAction runBlock:^{[self finishedSliding];}]]]];
             [frontHole runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+            
+            for (Cart *tmpC in carts)
+            {
+                if (tmpC.xp == selH && tmpC.yp == selV)
+                {
+                    tmpC.xp+=deltaH[moveDir];
+                    tmpC.yp+=deltaV[moveDir];
+                    [tmpC.holderNode runAction:[SKAction moveBy:moveVec duration:SLIDE_TIME]];
+                }
+            }
+            
             [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
         }
     }

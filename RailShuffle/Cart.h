@@ -29,7 +29,19 @@
 -(void)stepFinished;
 -(void)takeNextStep;
 -(void)goStraight;
+-(void)comeToAHalt;
+-(void)cartStopped;
+-(void)goCounterClockwiseDown;
+-(void)goCounterClockwiseRight;
+-(void)goCounterClockwiseUp;
+-(void)goCounterClockwiseLeft;
+-(void)goClockwiseDown;
+-(void)goClockwiseRight;
+-(void)goClockwiseUp;
+-(void)goClockwiseLeft;
 
 @property(nonatomic,strong) SKNode *holderNode;
+@property(nonatomic) int xp;
+@property(nonatomic) int yp;
 
 @end
