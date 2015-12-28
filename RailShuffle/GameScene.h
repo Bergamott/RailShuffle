@@ -100,6 +100,7 @@
 -(void)hideSelection;
 -(int)getGroundAtH:(int)h andV:(int)v;
 -(void)finishedSliding;
+-(void)checkForBagAt:(int)pos withCartZ:(float)z;
 -(void)exitPressed;
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;

@@ -233,8 +233,8 @@ static int deltaV[5] = {0,1,-1,0,0};
         int xp = [row characterAtIndex:p]-'0'+2;
         int yp = GRIDH-([row characterAtIndex:p+2]-'0')-2;
         
-        bag.anchorPoint = CGPointMake(0, 0);
-        bag.position = CGPointMake(gridBaseX+90.0*xp+14.0, gridBaseY+60.0*yp+5.0);
+        bag.anchorPoint = CGPointMake(0.45, 0);
+        bag.position = CGPointMake(gridBaseX+90.0*xp+45.0, gridBaseY+60.0*yp+5.0);
         bag.zPosition = OBSTACLE_Z-yp;
         bag.name = [NSString stringWithFormat:@"bag%d",GRIDW*yp+xp];
         [backgroundNode addChild:bag];
@@ -634,6 +634,21 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(int)getGroundAtH:(int)h andV:(int)v
 {
     return groundMap[v][h];
+}
+
+-(void)checkForBagAt:(int)pos withCartZ:(float)z
+{
+    SKSpriteNode *bag = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"bag%d",pos]];
+    if (bag != NULL)
+    {
+        bag.zPosition = z+0.5;
+        bag.texture = [myAtlas textureNamed:@"jump_bag"];
+        SKAction *moveUp = [SKAction moveByX:0 y:100 duration:0.3];
+        moveUp.timingMode = SKActionTimingEaseOut;
+        SKAction *moveDown = [SKAction moveByX:0 y:-60 duration:0.2];
+        moveDown.timingMode = SKActionTimingEaseIn;
+        [bag runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[moveUp,moveDown,[SKAction removeFromParent]]]]]];
+    }
 }
 
 -(void)exitPressed

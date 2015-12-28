@@ -9,8 +9,8 @@
 #import "Cart.h"
 #import "GameScene.h"
 
-#define BLOCK_INTERVAL 0.5
-#define CURVE_INTERVAL 0.4
+#define BLOCK_INTERVAL 0.8
+#define CURVE_INTERVAL 0.64
 #define FALL_INTERVAL 1.0
 
 @implementation Cart
@@ -55,6 +55,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 {
     int nextGround = [owner getGroundAtH:xp+deltaH[dir] andV:yp+deltaV[dir]];
     holderNode.zPosition = OBSTACLE_Z-yp-deltaV[dir];
+    [owner checkForBagAt:(yp+deltaV[dir])*GRIDW+xp+deltaH[dir] withCartZ:holderNode.zPosition];
     if (nextGround & CONTENT_OBSTACLE) // Crash
     {
         
