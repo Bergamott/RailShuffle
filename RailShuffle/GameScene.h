@@ -27,6 +27,7 @@
 #define SELECTION_Z 1.0
 #define DECORATION_Z 2.0
 #define RAIL_Z 3.0
+#define SHADOW_Z 4.0
 #define OBSTACLE_Z 50.0
 
 #define STATE_PREPARE 0

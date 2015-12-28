@@ -647,7 +647,20 @@ static int deltaV[5] = {0,1,-1,0,0};
         moveUp.timingMode = SKActionTimingEaseOut;
         SKAction *moveDown = [SKAction moveByX:0 y:-60 duration:0.2];
         moveDown.timingMode = SKActionTimingEaseIn;
+        
+        SKSpriteNode *shadow = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"money_shadow"]];
+        shadow.anchorPoint = CGPointMake(0.4, 0);
+        shadow.zPosition = SHADOW_Z;
+        shadow.position = bag.position;
+        [backgroundNode addChild:shadow];
+        
+        SKAction *shadowAway = [SKAction moveByX:80 y:-40 duration:0.3];
+        shadowAway.timingMode = SKActionTimingEaseOut;
+        SKAction *shadowBack = [SKAction moveByX:-60 y:30 duration:0.2];
+        shadowBack.timingMode = SKActionTimingEaseIn;
+        
         [bag runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[moveUp,moveDown,[SKAction removeFromParent]]]]]];
+        [shadow runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[shadowAway,shadowBack,[SKAction removeFromParent]]]]]];
     }
 }
 
