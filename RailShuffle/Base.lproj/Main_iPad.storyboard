@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="3h8-xG-5CC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="3h8-xG-5CC">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -170,6 +170,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4WO-D5-m49"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="gray_paper.png" id="2QI-5Q-bwO">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -209,6 +212,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eHZ-Lb-c7E"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="gray_paper.png" id="pxL-nV-bWs">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -248,6 +254,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WtG-I3-iOL"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="orange_paper.png" id="2Cm-vN-D8j">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -287,6 +296,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bji-P9-6K4"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="gray_paper.png" id="P3e-Er-CmD">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -326,6 +338,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BNx-fU-daf"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="green_paper.png" id="JlQ-jd-ZTk">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -365,6 +380,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dAw-K3-40m"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="orange_paper.png" id="OD5-7y-EZe">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -404,6 +422,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dci-io-liA"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="green_paper.png" id="ln1-6S-M3r">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -443,6 +464,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZLe-HU-01W"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="green_paper.png" id="2F2-HW-PwZ">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -482,6 +506,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fc8-0v-k8z"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="gray_paper.png" id="jOo-JK-QVV">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -525,6 +552,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dbs-ox-Icr"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="green_paper.png" id="2iD-uL-mnF">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -568,6 +598,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="fE6-9R-Kqs"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="orange_paper.png" id="r4O-Pm-M4S">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -611,6 +644,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wEv-i2-DbP"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="orange_paper.png" id="5kW-xs-To8">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -654,6 +690,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lmV-Qn-zuJ"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="green_paper.png" id="vcJ-Yo-GK7">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -697,6 +736,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Y2a-VA-AEL"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="orange_paper.png" id="Z27-zQ-u6F">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>
@@ -740,6 +782,9 @@
                                                 <state key="highlighted">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="levelButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lkv-Te-Dx5"/>
+                                                </connections>
                                             </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="gray_paper.png" id="ovj-iQ-chR">
                                                 <rect key="frame" x="20" y="64" width="130" height="60"/>

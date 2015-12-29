@@ -383,6 +383,12 @@ static int deltaV[5] = {0,1,-1,0,0};
     frontHole.hidden = TRUE;
     [backgroundNode addChild:frontHole];
     
+    if (level < 10)
+        digit0.texture = NULL;
+    else
+        digit0.texture = [myAtlas textureNamed:@"1"];
+    digit1.texture = [myAtlas textureNamed:[NSString stringWithFormat:@"%d",level%10]];
+    
     [self animateSignsIn];
 }
 
@@ -658,6 +664,11 @@ static int deltaV[5] = {0,1,-1,0,0};
         shadowAway.timingMode = SKActionTimingEaseOut;
         SKAction *shadowBack = [SKAction moveByX:-60 y:30 duration:0.2];
         shadowBack.timingMode = SKActionTimingEaseIn;
+        
+        SKEmitterNode *stars = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"starburst" ofType:@"sks"]];
+        stars.position = CGPointMake(bag.position.x,bag.position.y+30.0);
+        stars.zPosition = z-0.1;
+        [backgroundNode addChild:stars];
         
         [bag runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[moveUp,moveDown,[SKAction removeFromParent]]]]]];
         [shadow runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[shadowAway,shadowBack,[SKAction removeFromParent]]]]]];
