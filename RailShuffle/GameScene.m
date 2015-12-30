@@ -62,7 +62,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         {
             isPad = FALSE;
             if (size.width > 480) // 4-inch screen
-                xScale = 0.49;
+                xScale = 0.48;
             else // 3.5-inch screen
                 xScale = 0.412;
             yScale = 0.412;
@@ -75,9 +75,6 @@ static int deltaV[5] = {0,1,-1,0,0};
         [backgroundNode setYScale:yScale];
         
         [self addChild:backgroundNode];
-        
-        // Preload sounds
-        [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
         
         topNames = @[@"top_desert",@"top_rocks",@"top_vegetation"];
         groundNames = @[@"block_orange",@"block_gray",@"block_green"];
@@ -100,7 +97,7 @@ static int deltaV[5] = {0,1,-1,0,0};
                                             [cartTextures objectAtIndex:8],[cartTextures objectAtIndex:7],[cartTextures objectAtIndex:6],[cartTextures objectAtIndex:5]];
         clockwiseToHorizontalCarts = @[[cartTextures objectAtIndex:0],[cartTextures objectAtIndex:1],
                                      [cartTextures objectAtIndex:2],[cartTextures objectAtIndex:3],[cartTextures objectAtIndex:4],[cartTextures objectAtIndex:5]];
-        
+        player = [SoundPlayer sharedSoundPlayer];
         [self prepareSigns];
     }
     return self;
@@ -597,7 +594,7 @@ static int deltaV[5] = {0,1,-1,0,0};
                 }
             }
             
-            [backgroundNode runAction:[SKAction playSoundFileNamed:@"slide.wav" waitForCompletion:FALSE]];
+            [player playSlide];
         }
     }
     if (exitSignPressed)
@@ -670,18 +667,70 @@ static int deltaV[5] = {0,1,-1,0,0};
         stars.zPosition = z-0.1;
         [backgroundNode addChild:stars];
         
-        [bag runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[moveUp,moveDown,[SKAction removeFromParent]]]]]];
+        [bag runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[moveUp,moveDown,[SKAction runBlock:^{[self checkForSolved];}],[SKAction removeFromParent]]]]]];
         [shadow runAction:[SKAction group:@[[SKAction scaleBy:0.5 duration:0.8],[SKAction fadeAlphaTo:0 duration:0.8],[SKAction sequence:@[shadowAway,shadowBack,[SKAction removeFromParent]]]]]];
+        [player playChime];
+    }
+}
+
+-(void)checkForSolved
+{
+    numBags--;
+    if (numBags == 0) // All done
+    {
+        gameState = STATE_SOLVED;
+        for (Cart *tmpC in carts)
+            [tmpC haltMotion];
+        
+        [self animateSignsOut];
+    }
+}
+
+-(void)checkForFailed
+{
+    if (numCarts <= 0 && gameState == STATE_PLAYING)
+    {
+        gameState = STATE_FAIL;
+        
+        
     }
 }
 
 -(void)exitPressed
 {
+    [player playClick];
     [self animateSignsOut];
     for (Cart *tmpC in carts)
         [tmpC haltMotion];
     [owner fadeOutGameScene];
 }
 
+-(void)cartStopped
+{
+    numCarts--;
+    [self performSelector:@selector(checkForFailed) withObject:NULL afterDelay:1.0];
+}
+
+-(void)cartCrashed:(Cart*)c
+{
+    numCarts--;
+    [c haltMotion];
+    SKEmitterNode *smoke = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"smoke" ofType:@"sks"]];
+    smoke.position = CGPointMake(c.holderNode.position.x+c.sprite.position.x,c.holderNode.position.y+c.sprite.position.y);
+    smoke.zPosition = c.holderNode.zPosition+0.1;
+    [backgroundNode addChild:smoke];
+    SKEmitterNode *flames = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"flames" ofType:@"sks"]];
+    flames.position = smoke.position;
+    flames.zPosition = smoke.zPosition+0.1;
+    [backgroundNode addChild:flames];
+    SKEmitterNode *shards = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"shards" ofType:@"sks"]];
+    shards.position = smoke.position;
+    shards.zPosition = smoke.zPosition+0.2;
+    [backgroundNode addChild:shards];
+    [c.holderNode removeFromParent];
+    [[SoundPlayer sharedSoundPlayer] playCrash];
+    
+    [self performSelector:@selector(checkForFailed) withObject:NULL afterDelay:1.0];
+}
 
 @end

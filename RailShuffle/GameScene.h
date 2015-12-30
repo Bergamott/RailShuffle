@@ -32,8 +32,12 @@
 
 #define STATE_PREPARE 0
 #define STATE_PLAYING 1
+#define STATE_SOLVED 2
+#define STATE_FAIL 3
 
 @class ViewController;
+@class SoundPlayer;
+@class Cart;
 
 @interface GameScene : SKScene {
     
@@ -91,6 +95,7 @@
     CGPoint timerSignIn;
     
     ViewController *owner;
+    SoundPlayer *player;
 }
 
 -(void)prepareSigns;
@@ -102,7 +107,11 @@
 -(int)getGroundAtH:(int)h andV:(int)v;
 -(void)finishedSliding;
 -(void)checkForBagAt:(int)pos withCartZ:(float)z;
+-(void)checkForSolved;
+-(void)checkForFailed;
 -(void)exitPressed;
+-(void)cartStopped;
+-(void)cartCrashed:(Cart*)c;
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;
 @property(nonatomic,strong) SKNode *backgroundNode;

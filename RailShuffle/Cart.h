@@ -31,6 +31,7 @@
 -(void)goStraight;
 -(void)comeToAHalt;
 -(void)goIntoHole;
+-(void)crash;
 -(void)cartStopped;
 -(void)goCounterClockwiseDown;
 -(void)goCounterClockwiseRight;
@@ -44,6 +45,7 @@
 -(void)haltMotion;
 
 @property(nonatomic,strong) SKNode *holderNode;
+@property(nonatomic,strong) SKSpriteNode *sprite;
 @property(nonatomic) int xp;
 @property(nonatomic) int yp;
 

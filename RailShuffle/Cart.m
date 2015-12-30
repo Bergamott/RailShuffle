@@ -16,6 +16,7 @@
 @implementation Cart
 
 @synthesize holderNode;
+@synthesize sprite;
 @synthesize xp;
 @synthesize yp;
 
@@ -58,7 +59,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
     [owner checkForBagAt:(yp+deltaV[dir])*GRIDW+xp+deltaH[dir] withCartZ:holderNode.zPosition];
     if (nextGround & CONTENT_OBSTACLE) // Crash
     {
-        
+        [self crash];
     }
     else if (nextGround == GROUND_HOLE) // Hole
     {
@@ -180,6 +181,11 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
     SKAction *moveAction = [SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5) duration:BLOCK_INTERVAL];
     moveAction.timingMode = SKActionTimingEaseOut;
     [sprite runAction:[SKAction sequence:@[moveAction,[SKAction runBlock:^{[self cartStopped];}]]]];
+}
+
+-(void)crash
+{
+    [owner cartCrashed:self];
 }
 
 -(void)goIntoHole

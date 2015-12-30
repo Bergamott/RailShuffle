@@ -172,6 +172,7 @@
 
 -(IBAction)playButtonPressed:(id)sender
 {
+    [[SoundPlayer sharedSoundPlayer] playClick];
     levelView.alpha = 0;
     levelView.hidden = FALSE;
     [UIView animateWithDuration:FADE_TIME
@@ -184,6 +185,7 @@
 
 -(IBAction)musicButtonPressed:(id)sender
 {
+    [[SoundPlayer sharedSoundPlayer] playClick];
     SoundPlayer *sp = [SoundPlayer sharedSoundPlayer];
     [sp toggleMusicOn];
     checkbox.hidden = ![sp isMusicOn];
@@ -191,6 +193,7 @@
 
 -(IBAction)backFromLevelsPressed:(id)sender
 {
+    [[SoundPlayer sharedSoundPlayer] playClick];
     [UIView animateWithDuration:FADE_TIME
                      animations:^{
                          levelView.alpha = 0;
@@ -202,6 +205,7 @@
 
 -(IBAction)levelButtonPressed:(id)sender
 {
+    [[SoundPlayer sharedSoundPlayer] playClick];
     [self prepareGameForLevel:(int)((UIButton*)sender).tag];
 }
 

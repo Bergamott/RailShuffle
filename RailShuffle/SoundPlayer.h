@@ -42,7 +42,7 @@
 -(void)playFanfare;
 -(void)playGong;
 -(void)playSad;
--(void)playslide;
+-(void)playSlide;
 
 -(void)playSong:(int)s;
 -(void)stopSong;

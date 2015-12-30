@@ -70,6 +70,18 @@
     
     NSURL *audioPath = [[NSBundle mainBundle] URLForResource:@"chime" withExtension:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &chimeSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"click" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &clickSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"crash" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &crashSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"fanfare" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &fanfareSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"gong" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &gongSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"sad" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &sadSound);
+    audioPath = [[NSBundle mainBundle] URLForResource:@"slide" withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &slideSound);
     
     NSArray *songs = @[@"clementine",@"mountain",@"yankee",@"susanna"];
     musicPlayers = [NSMutableArray arrayWithCapacity:4];
@@ -115,7 +127,7 @@
     if (soundOn)
         AudioServicesPlaySystemSound(sadSound);
 }
--(void)playslide
+-(void)playSlide
 {
     if (soundOn)
         AudioServicesPlaySystemSound(slideSound);
