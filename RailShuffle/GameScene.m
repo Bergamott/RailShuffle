@@ -194,6 +194,10 @@ static int deltaV[5] = {0,1,-1,0,0};
     level = l;
     [backgroundNode removeAllChildren];
     
+    for (int i=0;i<GRIDH;i++)
+        for (int j=0;j<GRIDW;j++)
+            blockedMap[i][j] = FALSE;
+    
     // Load data from file
     NSString *path = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"level%d",level] ofType:@"txt"];
     NSError *err = nil;
@@ -394,6 +398,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     gameState = STATE_PLAYING;
     for (Cart *tmpC in carts)
         [tmpC getGoing];
+    [player playSong:(level-1)%3];
 }
 
 -(void)animateSignsIn
@@ -407,6 +412,7 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)animateSignsOut
 {
+    [player stopSong];
     [exitSignHolder runAction:[SKAction moveTo:exitSignOut duration:SIGN_ANIMATION_INTERVAL]];
     [levelSignHolder runAction:[SKAction moveTo:levelSignOut duration:SIGN_ANIMATION_INTERVAL]];
     [timerSignHolder runAction:[SKAction moveTo:timerSignOut duration:SIGN_ANIMATION_INTERVAL]];
@@ -429,8 +435,8 @@ static int deltaV[5] = {0,1,-1,0,0};
         int v = (int)((location.y-gridBaseY)/60.0);
         if (h >= 2 && h < GRIDW-2 && v >= 1 && v < GRIDH-1)
         {
-            if ((groundMap[v][h] & GROUND_MOBILE) && (groundMap[v+1][h]==0 || groundMap[v-1][h]==0 ||
-                                                      groundMap[v][h+1]==0 || groundMap[v][h-1]==0))
+            if ((groundMap[v][h] & GROUND_MOBILE) && ((groundMap[v+1][h]==0 && !blockedMap[v+1][h]) || (groundMap[v-1][h]==0 && !blockedMap[v-1][h]) ||
+                                                      (groundMap[v][h+1]==0 && !blockedMap[v][h+1]) || (groundMap[v][h-1]==0 && !blockedMap[v][h-1])))
             {
                 selectionNode.position = CGPointMake(gridBaseX+90.0*h, gridBaseY+60.0*v);
                 selectionNode.hidden = FALSE;
@@ -644,6 +650,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     SKSpriteNode *bag = (SKSpriteNode*)[backgroundNode childNodeWithName:[NSString stringWithFormat:@"bag%d",pos]];
     if (bag != NULL)
     {
+        numBags--;
         bag.zPosition = z+0.5;
         bag.texture = [myAtlas textureNamed:@"jump_bag"];
         SKAction *moveUp = [SKAction moveByX:0 y:100 duration:0.3];
@@ -673,9 +680,13 @@ static int deltaV[5] = {0,1,-1,0,0};
     }
 }
 
+-(void)setBlocked:(BOOL)b atH:(int)h andV:(int)v
+{
+    blockedMap[v][h] = b;
+}
+
 -(void)checkForSolved
 {
-    numBags--;
     if (numBags == 0) // All done
     {
         gameState = STATE_SOLVED;
@@ -692,7 +703,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     {
         gameState = STATE_FAIL;
         
-        
+        [self animateSignsOut];
     }
 }
 

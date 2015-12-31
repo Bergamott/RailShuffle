@@ -20,6 +20,14 @@
     // Override point for customization after application launch.
     
     [[SoundPlayer sharedSoundPlayer] loadSounds];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *levelResults = [defaults stringForKey:@"results"];
+    if (levelResults == NULL)
+    {
+        [defaults setObject:@"0000000000000000" forKey:@"results"];
+        [defaults synchronize];
+    }
+    
     return YES;
 }
 

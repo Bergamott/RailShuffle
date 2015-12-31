@@ -48,6 +48,7 @@
     int level;
     int natureType;
     int groundMap[GRIDH][GRIDW];
+    BOOL blockedMap[GRIDH][GRIDW];
     float gridBaseX,gridBaseY;
     float xScale,yScale;
     float screenHeight;
@@ -112,6 +113,7 @@
 -(void)exitPressed;
 -(void)cartStopped;
 -(void)cartCrashed:(Cart*)c;
+-(void)setBlocked:(BOOL)b atH:(int)h andV:(int)v;
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;
 @property(nonatomic,strong) SKNode *backgroundNode;

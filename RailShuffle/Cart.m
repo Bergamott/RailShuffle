@@ -190,6 +190,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)goIntoHole
 {
+    [owner setBlocked:TRUE atH:xp+deltaH[dir] andV:yp+deltaV[dir]];
     newDir = 0;
     SKAction *moveAction = [SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5 - 10.0) duration:BLOCK_INTERVAL];
     moveAction.timingMode = SKActionTimingEaseOut;
@@ -200,8 +201,9 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)cartStopped
 {
-    
-    
+    // Unblock hole
+    [owner setBlocked:FALSE atH:xp+deltaH[dir] andV:yp+deltaV[dir]];
+    [owner cartStopped];
 }
 
 -(void)goCounterClockwiseDown

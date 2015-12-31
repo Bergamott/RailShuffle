@@ -173,6 +173,30 @@
 -(IBAction)playButtonPressed:(id)sender
 {
     [[SoundPlayer sharedSoundPlayer] playClick];
+
+    // Set accessible levels
+    NSString *results = [[NSUserDefaults standardUserDefaults] stringForKey:@"results"];
+    for (int i=0;i<[results length];i++)
+    {
+        int r = [results characterAtIndex:i]-'0';
+        UIView *tmpV = [levelView.subviews objectAtIndex:i+1];
+        if (i == 0 || r > 0)
+        {
+            tmpV.alpha = 1.0;
+            tmpV.userInteractionEnabled = TRUE;
+        }
+        else
+        {
+            tmpV.alpha = 0.5;
+            tmpV.userInteractionEnabled = FALSE;
+        }
+        // Set plus signs
+        for (int j=0;j<3;j++)
+        {
+            [tmpV.subviews objectAtIndex:j+2].hidden = (j >= r);
+        }
+    }
+    
     levelView.alpha = 0;
     levelView.hidden = FALSE;
     [UIView animateWithDuration:FADE_TIME
