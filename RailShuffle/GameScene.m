@@ -837,14 +837,14 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(void)dropCart:(Cart*)c intoHoleAtH:(int)h andV:(int)v
 {
     int holeHeight = 0;
-    NSLog(@"Hole at h: %d, v: %d",h,v);
     while (groundMap[v-holeHeight][h] == 0)
         holeHeight++;
     NSLog(@"Holeheight: %d",holeHeight);
-    SKSpriteNode *holeMask = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size: CGSizeMake(90.0, 60.0*holeHeight)];
+    SKSpriteNode *holeMask = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size: CGSizeMake(270.0, 60.0*holeHeight+60.0)]; // Include enough mask for shards later
     holeMask.anchorPoint = CGPointMake(0, 0);
-    holeMask.position = CGPointMake(gridBaseX+h*90.0-c.holderNode.position.x,gridBaseY+(v+1-holeHeight)*60.0-c.holderNode.position.y);
+    holeMask.position = CGPointMake(gridBaseX+(h-1)*90.0-c.holderNode.position.x,gridBaseY+(v+1-holeHeight)*60.0-c.holderNode.position.y);
     SKCropNode *cropNode = [SKCropNode node];
+    cropNode.name = @"crop";
     [cropNode setMaskNode:holeMask];
     SKSpriteNode *cartSprite = c.sprite;
     [c.sprite removeFromParent];
@@ -859,7 +859,11 @@ static int deltaV[5] = {0,1,-1,0,0};
 {
     numCarts--;
     [c haltMotion];
-    [c.holderNode removeFromParent];
+    SKCropNode *cropNode = (SKCropNode*)[c.holderNode childNodeWithName:@"crop"];
+    SKEmitterNode *shards = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"landing" ofType:@"sks"]];
+    shards.position = CGPointMake(c.sprite.position.x, c.sprite.position.y+100);
+    [cropNode addChild:shards];
+    [c.sprite removeFromParent];
     [[SoundPlayer sharedSoundPlayer] playCrash];
     
     [self performSelector:@selector(checkForFailed) withObject:NULL afterDelay:1.0];

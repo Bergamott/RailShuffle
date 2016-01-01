@@ -30,6 +30,7 @@
 		9A289B2A1C3481D90049267D /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A289B281C3481D90049267D /* spark.png */; };
 		9A289B2C1C3483400049267D /* flames.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9A289B2B1C3483400049267D /* flames.sks */; };
 		9A289B2E1C348B230049267D /* shards.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9A289B2D1C348B230049267D /* shards.sks */; };
+		9A4DC36F1C36BC5600075720 /* landing.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9A4DC36E1C36BC5600075720 /* landing.sks */; };
 		9A590CF71C330D270024992F /* star0.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A590CF51C330D270024992F /* star0.png */; };
 		9A590CF81C330D270024992F /* star0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9A590CF61C330D270024992F /* star0@2x.png */; };
 		9A590CFB1C330D630024992F /* starburst.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9A590CF91C330D630024992F /* starburst.sks */; };
@@ -134,6 +135,7 @@
 		9A289B281C3481D90049267D /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		9A289B2B1C3483400049267D /* flames.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = flames.sks; sourceTree = "<group>"; };
 		9A289B2D1C348B230049267D /* shards.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = shards.sks; sourceTree = "<group>"; };
+		9A4DC36E1C36BC5600075720 /* landing.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = landing.sks; sourceTree = "<group>"; };
 		9A590CF51C330D270024992F /* star0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star0.png; sourceTree = "<group>"; };
 		9A590CF61C330D270024992F /* star0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "star0@2x.png"; sourceTree = "<group>"; };
 		9A590CF91C330D630024992F /* starburst.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = starburst.sks; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				9A289B281C3481D90049267D /* spark.png */,
 				9A289B2B1C3483400049267D /* flames.sks */,
 				9A289B2D1C348B230049267D /* shards.sks */,
+				9A4DC36E1C36BC5600075720 /* landing.sks */,
 				9ADECEB21BF7EB4800EFD8AD /* Main.storyboard */,
 				9A6DE0151BF7F23B009174C4 /* Main_iPad.storyboard */,
 				9ADECEB51BF7EB4800EFD8AD /* Assets.xcassets */,
@@ -468,6 +471,7 @@
 				9A289B2A1C3481D90049267D /* spark.png in Resources */,
 				9ADECEC81BF7EC1900EFD8AD /* intro_iphone@2x.png in Resources */,
 				9ADECEDD1BF7ED0C00EFD8AD /* playbutton.png in Resources */,
+				9A4DC36F1C36BC5600075720 /* landing.sks in Resources */,
 				9A6DD35C1C021D66007353E7 /* crash.wav in Resources */,
 				9A6DD35A1C021D66007353E7 /* clementine.mp3 in Resources */,
 				9A6DD3621C021D66007353E7 /* susanna.mp3 in Resources */,
