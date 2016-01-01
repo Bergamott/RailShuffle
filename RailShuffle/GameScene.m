@@ -28,6 +28,7 @@
 @synthesize clockwiseToVerticalCarts;
 @synthesize counterClockwiseToHorizontalCarts;
 @synthesize clockwiseToHorizontalCarts;
+@synthesize gameLoopTimer;
 
 @synthesize owner;
 
@@ -114,6 +115,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     exitCross.anchorPoint = CGPointMake(0,0);
     exitCross.position = CGPointMake(18.0,22.0);
     [exitSignHolder addChild:exitCross];
+    exitSignHolder.zPosition = SIGN_Z;
     
     levelSignHolder = [SKNode node];
     levelSignHolder.zPosition = 100.0;
@@ -128,6 +130,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     digit1.anchorPoint = CGPointMake(0,0);
     digit1.position = CGPointMake(186.0,-76.0);
     [levelSignHolder addChild:digit1];
+    levelSignHolder.zPosition = SIGN_Z;
     
     timerSignHolder = [SKNode node];
     timerSignHolder.zPosition = 100.0;
@@ -146,6 +149,24 @@ static int deltaV[5] = {0,1,-1,0,0};
     SKSpriteNode *tmpS2 = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_time"]];
     tmpS2.anchorPoint = CGPointMake(0,1.0);
     [timerSignHolder addChild:tmpS2];
+    timerSignHolder.zPosition = SIGN_Z;
+    
+    gameOverHolder = [SKNode node];
+    [gameOverHolder addChild:[SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"sign_gameover"]]];
+    gameOverHeadline = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"game_over"]];
+    gameOverHeadline.position = CGPointMake(0, 36.0);
+    [gameOverHolder addChild:gameOverHeadline];
+    backButton = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"exit"]];
+    backButton.position = CGPointMake(-90.0, -62.0);
+    [gameOverHolder addChild:backButton];
+    repeatButton = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"again"]];
+    repeatButton.position = CGPointMake(0, -62.0);
+    [gameOverHolder addChild:repeatButton];
+    nextButton = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:@"forward"]];
+    nextButton.position = CGPointMake(90.0, -62.0);
+    [gameOverHolder addChild:nextButton];
+    gameOverHolder.zPosition = SIGN_Z;
+    gameOverHolder.hidden = TRUE;
     
     if (isPad)
     {
@@ -160,6 +181,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         exitSignHolder.position = exitSignOut;
         levelSignHolder.position = levelSignOut;
         timerSignHolder.position = timerSignOut;
+        gameOverHolder.position = CGPointMake(self.size.width*0.5, self.size.height*0.5);
     }
     else
     {
@@ -182,17 +204,22 @@ static int deltaV[5] = {0,1,-1,0,0};
         timerSignHolder.xScale = 0.64;
         timerSignHolder.yScale = 0.64;
         timerSignHolder.position = timerSignOut;
+        
+        gameOverHolder.position = CGPointMake(self.size.width*0.5, self.size.height*0.5);
 
     }
+    
     [self addChild:exitSignHolder];
     [self addChild:levelSignHolder];
     [self addChild:timerSignHolder];
+    [self addChild:gameOverHolder];
 }
 
 -(void)setupWithLevel:(int)l
 {
     level = l;
     [backgroundNode removeAllChildren];
+    gameOverHolder.hidden = TRUE;
     
     for (int i=0;i<GRIDH;i++)
         for (int j=0;j<GRIDW;j++)
@@ -376,7 +403,12 @@ static int deltaV[5] = {0,1,-1,0,0};
         [carts addObject:newCart];
         numCarts++;
     }
-
+    // Timer
+    NSArray *times = [(NSString*)[levRows objectAtIndex:15] componentsSeparatedByString:@","];
+    maxTime = [(NSString*)[times objectAtIndex:0] intValue];
+    greatTime = [(NSString*)[times objectAtIndex:1] intValue];
+    timeLeft = maxTime;
+    
     movingPiece = -1;
     self.frontHole = [SKSpriteNode spriteNodeWithTexture:[myAtlas textureNamed:[edgeNames objectAtIndex:natureType]]];
     frontHole.anchorPoint = CGPointMake(0, 0);
@@ -391,6 +423,8 @@ static int deltaV[5] = {0,1,-1,0,0};
     digit1.texture = [myAtlas textureNamed:[NSString stringWithFormat:@"%d",level%10]];
     
     [self animateSignsIn];
+    self.gameLoopTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self
+                                                selector: @selector(gameLoop:) userInfo: nil repeats: YES];
 }
 
 -(void)startLevel
@@ -403,6 +437,7 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)animateSignsIn
 {
+    timerBar.xScale = BAR_MAX_SCALE;
     exitSignPressed = FALSE;
     [exitSignHolder runAction:[SKAction moveTo:exitSignIn duration:SIGN_ANIMATION_INTERVAL]];
     [levelSignHolder runAction:[SKAction moveTo:levelSignIn duration:SIGN_ANIMATION_INTERVAL]];
@@ -413,6 +448,11 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(void)animateSignsOut
 {
     [player stopSong];
+    if (gameLoopTimer != NULL)
+    {
+        [gameLoopTimer invalidate];
+        gameLoopTimer = NULL;
+    }
     [exitSignHolder runAction:[SKAction moveTo:exitSignOut duration:SIGN_ANIMATION_INTERVAL]];
     [levelSignHolder runAction:[SKAction moveTo:levelSignOut duration:SIGN_ANIMATION_INTERVAL]];
     [timerSignHolder runAction:[SKAction moveTo:timerSignOut duration:SIGN_ANIMATION_INTERVAL]];
@@ -453,6 +493,28 @@ static int deltaV[5] = {0,1,-1,0,0};
     {
         exitCross.texture = [myAtlas textureNamed:@"x_highlight"];
         exitSignPressed = TRUE;
+    }
+    buttonPressed = -1;
+    if (gameState == STATE_FAIL || gameState == STATE_SOLVED)
+    {
+        CGPoint loc = [touch locationInNode:backButton];
+        if (loc.x >= -27 && loc.x < 27 && loc.y >= -27 && loc.y < 27)
+        {
+            buttonPressed = 0;
+            backButton.texture = [myAtlas textureNamed:@"exit_highlight"];
+        }
+        loc = [touch locationInNode:repeatButton];
+        if (loc.x >= -27 && loc.x < 27 && loc.y >= -27 && loc.y < 27)
+        {
+            buttonPressed = 1;
+            repeatButton.texture = [myAtlas textureNamed:@"again_highlight"];
+        }
+        loc = [touch locationInNode:nextButton];
+        if (loc.x >= -27 && loc.x < 27 && loc.y >= -27 && loc.y < 27)
+        {
+            buttonPressed = 2;
+            nextButton.texture = [myAtlas textureNamed:@"forward_highlight"];
+        }
     }
 }
 
@@ -610,7 +672,29 @@ static int deltaV[5] = {0,1,-1,0,0};
         [[SoundPlayer sharedSoundPlayer] playClick];
         [self exitPressed];
     }
-
+    
+    // Game over or level completed buttons
+    if ((gameState == STATE_FAIL || gameState == STATE_SOLVED) && buttonPressed >= 0)
+    {
+        [player playClick];
+        gameOverHolder.hidden = TRUE;
+        if (buttonPressed == 0)
+        {
+            backButton.texture = [myAtlas textureNamed:@"exit"];
+            [owner fadeOutGameScene];
+        }
+        else if (buttonPressed == 1)
+        {
+            repeatButton.texture = [myAtlas textureNamed:@"again"];
+            [self setupWithLevel:level];
+        }
+        else if (buttonPressed == 2)
+        {
+            nextButton.texture = [myAtlas textureNamed:@"forward"];
+            [self setupWithLevel:level+1];
+        }
+        buttonPressed = -1;
+    }
 }
 
 -(void)finishedSliding
@@ -694,6 +778,9 @@ static int deltaV[5] = {0,1,-1,0,0};
             [tmpC haltMotion];
         
         [self animateSignsOut];
+        [player playFanfare];
+        
+        [self showGameOver];
     }
 }
 
@@ -702,8 +789,10 @@ static int deltaV[5] = {0,1,-1,0,0};
     if (numCarts <= 0 && gameState == STATE_PLAYING)
     {
         gameState = STATE_FAIL;
+        [player playSad];
         
         [self animateSignsOut];
+        [self showGameOver];
     }
 }
 
@@ -742,6 +831,111 @@ static int deltaV[5] = {0,1,-1,0,0};
     [[SoundPlayer sharedSoundPlayer] playCrash];
     
     [self performSelector:@selector(checkForFailed) withObject:NULL afterDelay:1.0];
+}
+
+-(void)dropCart:(Cart*)c intoHoleAtH:(int)h andV:(int)v
+{
+    int holeHeight = 0;
+    NSLog(@"Hole at h: %d, v: %d",h,v);
+    while (groundMap[v-holeHeight][h] == 0)
+        holeHeight++;
+    NSLog(@"Holeheight: %d",holeHeight);
+    SKSpriteNode *holeMask = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size: CGSizeMake(90.0, 60.0*holeHeight)];
+    holeMask.anchorPoint = CGPointMake(0, 0);
+    holeMask.position = CGPointMake(gridBaseX+h*90.0-c.holderNode.position.x,gridBaseY+(v+1-holeHeight)*60.0-c.holderNode.position.y);
+    SKCropNode *cropNode = [SKCropNode node];
+    [cropNode setMaskNode:holeMask];
+    SKSpriteNode *cartSprite = c.sprite;
+    [c.sprite removeFromParent];
+    [cropNode addChild:cartSprite];
+    [c.holderNode addChild:cropNode];
+    SKAction *fallAction = [SKAction moveBy:CGVectorMake(0, -200.0) duration:1.0];
+    fallAction.timingMode = SKActionTimingEaseOut;
+    [cartSprite runAction:[SKAction sequence:@[fallAction, [SKAction runBlock:^{[c cartLanded];}]]]];
+}
+
+-(void)cartLanded:(Cart*)c
+{
+    numCarts--;
+    [c haltMotion];
+/*    SKEmitterNode *smoke = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"smoke" ofType:@"sks"]];
+    smoke.position = CGPointMake(c.holderNode.position.x+c.sprite.position.x,c.holderNode.position.y+c.sprite.position.y);
+    smoke.zPosition = c.holderNode.zPosition+0.1;
+    [backgroundNode addChild:smoke];
+    SKEmitterNode *flames = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"flames" ofType:@"sks"]];
+    flames.position = smoke.position;
+    flames.zPosition = smoke.zPosition+0.1;
+    [backgroundNode addChild:flames];
+    SKEmitterNode *shards = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"shards" ofType:@"sks"]];
+    shards.position = smoke.position;
+    shards.zPosition = smoke.zPosition+0.2;
+    [backgroundNode addChild:shards];*/
+    [c.holderNode removeFromParent];
+    [[SoundPlayer sharedSoundPlayer] playCrash];
+    
+    [self performSelector:@selector(checkForFailed) withObject:NULL afterDelay:1.0];
+}
+
+
+-(void)gameLoop:(NSTimer*)t
+{
+    // Update timer
+    NSLog(@"game loop");
+    timeLeft--;
+    if (timeLeft < 0) // Out of time
+    {
+        [player playGong];
+        gameState = STATE_FAIL;
+        for (Cart *tmpC in carts)
+            [tmpC haltMotion];
+        [self animateSignsOut];
+        [self showGameOver];
+    }
+    else
+    {
+        timerBar.xScale = timeLeft*BAR_MAX_SCALE/maxTime;
+    }
+}
+
+-(void)showGameOver
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *solvedStatus = [defaults stringForKey:@"results"];
+    if (gameState == STATE_SOLVED)
+    {
+        unichar pluses[1];
+        if (timeLeft >= greatTime)
+        {
+            pluses[0] = '3';
+            gameOverHeadline.texture = [myAtlas textureNamed:@"great"];
+        }
+        else if (timeLeft >= greatTime/2)
+        {
+            pluses[0] = '2';
+            gameOverHeadline.texture = [myAtlas textureNamed:@"good"];
+        }
+        else
+        {
+            pluses[0] = '1';
+            gameOverHeadline.texture = [myAtlas textureNamed:@"ok"];
+        }
+        if (pluses[0] > [solvedStatus characterAtIndex:level-1])
+        {
+            solvedStatus = [solvedStatus stringByReplacingCharactersInRange:NSMakeRange(level-1, 1) withString:[NSString stringWithCharacters:pluses length:1]];
+            [defaults setObject:solvedStatus forKey:@"results"];
+            [defaults synchronize];
+        }
+    }
+    else
+        gameOverHeadline.texture = [myAtlas textureNamed:@"game_over"];
+    [gameOverHeadline setSize:gameOverHeadline.texture.size];
+    
+    nextButton.hidden = (level > 15 || [solvedStatus characterAtIndex:level-1] == '0');
+    
+    gameOverHolder.xScale = 0.1;
+    gameOverHolder.yScale = 0.1;
+    gameOverHolder.hidden = FALSE;
+    [gameOverHolder runAction:[SKAction sequence:@[[SKAction scaleTo:1.1 duration:0.3],[SKAction scaleTo:1.0 duration:0.1]]]];
 }
 
 @end

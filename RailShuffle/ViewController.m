@@ -179,8 +179,11 @@
     for (int i=0;i<[results length];i++)
     {
         int r = [results characterAtIndex:i]-'0';
+        BOOL previousSolved = TRUE;
+        if (i > 0)
+            previousSolved = ([results characterAtIndex:i-1] > '0');
         UIView *tmpV = [levelView.subviews objectAtIndex:i+1];
-        if (i == 0 || r > 0)
+        if (previousSolved)
         {
             tmpV.alpha = 1.0;
             tmpV.userInteractionEnabled = TRUE;

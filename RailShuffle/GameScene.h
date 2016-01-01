@@ -29,6 +29,7 @@
 #define RAIL_Z 3.0
 #define SHADOW_Z 4.0
 #define OBSTACLE_Z 50.0
+#define SIGN_Z 100.0
 
 #define STATE_PREPARE 0
 #define STATE_PLAYING 1
@@ -87,6 +88,13 @@
     SKNode *timerSignHolder;
     SKSpriteNode *timerBar;
     BOOL exitSignPressed;
+    SKNode *gameOverHolder;
+    SKSpriteNode *gameOverHeadline;
+    SKSpriteNode *repeatButton;
+    SKSpriteNode *nextButton;
+    SKSpriteNode *backButton;
+    int buttonPressed;
+    
     
     CGPoint exitSignOut;
     CGPoint exitSignIn;
@@ -97,6 +105,9 @@
     
     ViewController *owner;
     SoundPlayer *player;
+    
+    NSTimer *gameLoopTimer;
+    int maxTime,greatTime,timeLeft;
 }
 
 -(void)prepareSigns;
@@ -113,7 +124,13 @@
 -(void)exitPressed;
 -(void)cartStopped;
 -(void)cartCrashed:(Cart*)c;
+-(void)dropCart:(Cart*)c intoHoleAtH:(int)h andV:(int)v;
+-(void)cartLanded:(Cart*)c;
 -(void)setBlocked:(BOOL)b atH:(int)h andV:(int)v;
+
+-(void)gameLoop:(NSTimer*)t;
+-(void)showGameOver;
+
 
 @property(nonatomic,strong) SKTextureAtlas *myAtlas;
 @property(nonatomic,strong) SKNode *backgroundNode;
@@ -127,5 +144,7 @@
 @property(nonatomic,strong) NSArray *clockwiseToHorizontalCarts;
 
 @property(nonatomic,strong) ViewController *owner;
+@property(nonatomic,strong) NSTimer *gameLoopTimer;
+
 
 @end

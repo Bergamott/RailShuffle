@@ -190,20 +190,30 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)goIntoHole
 {
+    newDir = 0;
     [owner setBlocked:TRUE atH:xp+deltaH[dir] andV:yp+deltaV[dir]];
+    // The run block will be executed after xp and yp have been updated
+    [sprite runAction:[SKAction sequence:@[[SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5 - 10.0) duration:BLOCK_INTERVAL*0.5],[SKAction runBlock:^{[owner dropCart:self intoHoleAtH:xp andV:yp];}]]]];
+    
+/*
     newDir = 0;
     SKAction *moveAction = [SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5 - 10.0) duration:BLOCK_INTERVAL];
     moveAction.timingMode = SKActionTimingEaseOut;
     SKAction *fallAction = [SKAction moveBy:CGVectorMake(0, -200.0) duration:FALL_INTERVAL];
     fallAction.timingMode = SKActionTimingEaseOut;
-    [sprite runAction:[SKAction sequence:@[moveAction,[SKAction runBlock:^{holderNode.zPosition = FALL_Z;}],fallAction,[SKAction runBlock:^{[self cartStopped];}]]]];
+    [sprite runAction:[SKAction sequence:@[moveAction,[SKAction runBlock:^{holderNode.zPosition = FALL_Z;}],fallAction,[SKAction runBlock:^{[self cartLanded];}]]]];*/
 }
 
 -(void)cartStopped
 {
+    [owner cartStopped];
+}
+
+-(void)cartLanded
+{
     // Unblock hole
     [owner setBlocked:FALSE atH:xp+deltaH[dir] andV:yp+deltaV[dir]];
-    [owner cartStopped];
+    [owner cartLanded:self];
 }
 
 -(void)goCounterClockwiseDown

@@ -33,6 +33,7 @@
 -(void)goIntoHole;
 -(void)crash;
 -(void)cartStopped;
+-(void)cartLanded;
 -(void)goCounterClockwiseDown;
 -(void)goCounterClockwiseRight;
 -(void)goCounterClockwiseUp;
