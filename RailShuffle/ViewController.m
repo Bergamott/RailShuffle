@@ -26,6 +26,7 @@
 @implementation ViewController
 
 @synthesize gameScene;
+@synthesize maxLevels;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,6 +41,15 @@
     gameScene.scaleMode = SKSceneScaleModeAspectFill;
     [skView presentScene:gameScene];
     gameScene.owner = self;
+    
+#ifdef LITE
+    liteBanner.hidden = FALSE;
+    maxLevels = 8;
+    NSLog(@"Lite banner not hidden");
+#else
+    liteBanner.hidden = TRUE;
+    maxLevels = 16;
+#endif
     
     screenWidth = self.view.frame.size.width;
     
@@ -183,14 +193,19 @@
         if (i > 0)
             previousSolved = ([results characterAtIndex:i-1] > '0');
         UIView *tmpV = [levelView.subviews objectAtIndex:i+1];
-        if (previousSolved)
+        if (previousSolved && i<maxLevels)
         {
             tmpV.alpha = 1.0;
             tmpV.userInteractionEnabled = TRUE;
         }
-        else
+        else if (i<maxLevels)
         {
             tmpV.alpha = 0.5;
+            tmpV.userInteractionEnabled = FALSE;
+        }
+        else
+        {
+            tmpV.alpha = 0;
             tmpV.userInteractionEnabled = FALSE;
         }
         // Set plus signs

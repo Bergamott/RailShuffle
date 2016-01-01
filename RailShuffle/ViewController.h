@@ -31,6 +31,9 @@
     
     float screenWidth;
     
+    IBOutlet UIImageView *liteBanner;
+    int maxLevels;
+    
     IBOutlet UIView *levelView;
     
     // Game scene stuff
@@ -54,6 +57,7 @@
 -(void)fadeOutGameScene;
 
 @property(nonatomic,strong) GameScene *gameScene;
+@property(nonatomic) int maxLevels;
 
 @end
 

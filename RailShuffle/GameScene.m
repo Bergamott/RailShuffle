@@ -873,7 +873,6 @@ static int deltaV[5] = {0,1,-1,0,0};
 -(void)gameLoop:(NSTimer*)t
 {
     // Update timer
-    NSLog(@"game loop");
     timeLeft--;
     if (timeLeft < 0) // Out of time
     {
@@ -923,7 +922,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         gameOverHeadline.texture = [myAtlas textureNamed:@"game_over"];
     [gameOverHeadline setSize:gameOverHeadline.texture.size];
     
-    nextButton.hidden = (level > 15 || [solvedStatus characterAtIndex:level-1] == '0');
+    nextButton.hidden = (level > owner.maxLevels-1 || [solvedStatus characterAtIndex:level-1] == '0');
     
     gameOverHolder.xScale = 0.1*gameOverHolderScale;
     gameOverHolder.yScale = 0.1*gameOverHolderScale;

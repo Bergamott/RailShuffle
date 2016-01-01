@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>RailShuffle copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>RailShuffle.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -12,6 +17,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>9A4DC3701C36D38D00075720</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>9ADECEA51BF7EB4800EFD8AD</key>
 		<dict>
 			<key>primary</key>

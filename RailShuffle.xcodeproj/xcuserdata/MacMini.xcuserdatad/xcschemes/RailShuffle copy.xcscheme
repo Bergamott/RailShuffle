@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0710"
+   LastUpgradeVersion = "0720"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9ADECEA51BF7EB4800EFD8AD"
-               BuildableName = "Rail Shuffle.app"
-               BlueprintName = "Rail Shuffle"
+               BlueprintIdentifier = "9A4DC3701C36D38D00075720"
+               BuildableName = "Rails Lite.app"
+               BlueprintName = "Rails Lite"
                ReferencedContainer = "container:RailShuffle.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9ADECEA51BF7EB4800EFD8AD"
-            BuildableName = "Rail Shuffle.app"
-            BlueprintName = "Rail Shuffle"
+            BlueprintIdentifier = "9A4DC3701C36D38D00075720"
+            BuildableName = "Rails Lite.app"
+            BlueprintName = "Rails Lite"
             ReferencedContainer = "container:RailShuffle.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9ADECEA51BF7EB4800EFD8AD"
-            BuildableName = "Rail Shuffle.app"
-            BlueprintName = "Rail Shuffle"
+            BlueprintIdentifier = "9A4DC3701C36D38D00075720"
+            BuildableName = "Rails Lite.app"
+            BlueprintName = "Rails Lite"
             ReferencedContainer = "container:RailShuffle.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9ADECEA51BF7EB4800EFD8AD"
-            BuildableName = "Rail Shuffle.app"
-            BlueprintName = "Rail Shuffle"
+            BlueprintIdentifier = "9A4DC3701C36D38D00075720"
+            BuildableName = "Rails Lite.app"
+            BlueprintName = "Rails Lite"
             ReferencedContainer = "container:RailShuffle.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
