@@ -14,13 +14,21 @@
     BOOL soundOn;
     BOOL musicOn;
     
-    SystemSoundID chimeSound;
+/*    SystemSoundID chimeSound;
     SystemSoundID clickSound;
     SystemSoundID crashSound;
     SystemSoundID fanfareSound;
     SystemSoundID gongSound;
     SystemSoundID sadSound;
-    SystemSoundID slideSound;
+    SystemSoundID slideSound;*/
+    
+    AVAudioPlayer *chimeSound;
+    AVAudioPlayer *clickSound;
+    AVAudioPlayer *crashSound;
+    AVAudioPlayer *fanfareSound;
+    AVAudioPlayer *gongSound;
+    AVAudioPlayer *sadSound;
+    AVAudioPlayer *slideSound;
     
     NSMutableArray *musicPlayers;
     int currentSong;

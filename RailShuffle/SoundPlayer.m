@@ -68,7 +68,7 @@
     musicOn = ![defaults boolForKey:@"musicMute"];
     currentSong = -1;
     
-    NSURL *audioPath = [[NSBundle mainBundle] URLForResource:@"chime" withExtension:@"wav"];
+/*    NSURL *audioPath = [[NSBundle mainBundle] URLForResource:@"chime" withExtension:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &chimeSound);
     audioPath = [[NSBundle mainBundle] URLForResource:@"click" withExtension:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &clickSound);
@@ -81,7 +81,22 @@
     audioPath = [[NSBundle mainBundle] URLForResource:@"sad" withExtension:@"wav"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &sadSound);
     audioPath = [[NSBundle mainBundle] URLForResource:@"slide" withExtension:@"wav"];
-    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &slideSound);
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)audioPath, &slideSound);*/
+    
+    NSURL *soundURL = [[NSBundle mainBundle] URLForResource:@"chime" withExtension:@"wav"];
+    chimeSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"click" withExtension:@"wav"];
+    clickSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"crash" withExtension:@"wav"];
+    crashSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"fanfare" withExtension:@"wav"];
+    fanfareSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"gong" withExtension:@"wav"];
+    gongSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"sad" withExtension:@"wav"];
+    sadSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
+    soundURL = [[NSBundle mainBundle] URLForResource:@"slide" withExtension:@"wav"];
+    slideSound = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:nil];
     
     NSArray *songs = @[@"clementine",@"mountain",@"yankee",@"susanna"];
     musicPlayers = [NSMutableArray arrayWithCapacity:4];
@@ -100,37 +115,44 @@
 -(void)playChime
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(chimeSound);
+        [chimeSound play];
+//        AudioServicesPlaySystemSound(chimeSound);
 }
 -(void)playClick
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(clickSound);
+        [clickSound play];
+    //        AudioServicesPlaySystemSound(clickSound);
 }
 -(void)playCrash
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(crashSound);
+        [crashSound play];
+    //        AudioServicesPlaySystemSound(crashSound);
 }
 -(void)playFanfare
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(fanfareSound);
+        [fanfareSound play];
+    //        AudioServicesPlaySystemSound(fanfareSound);
 }
 -(void)playGong
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(gongSound);
+        [gongSound play];
+    //        AudioServicesPlaySystemSound(gongSound);
 }
 -(void)playSad
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(sadSound);
+        [sadSound play];
+    //        AudioServicesPlaySystemSound(sadSound);
 }
 -(void)playSlide
 {
     if (soundOn)
-        AudioServicesPlaySystemSound(slideSound);
+        [slideSound play];
+    //        AudioServicesPlaySystemSound(slideSound);
 }
 
 

@@ -9,8 +9,8 @@
 #import "Cart.h"
 #import "GameScene.h"
 
-#define BLOCK_INTERVAL 0.8
-#define CURVE_INTERVAL 0.64
+#define BLOCK_INTERVAL 1.0
+#define CURVE_INTERVAL 0.76
 #define FALL_INTERVAL 1.0
 
 @implementation Cart
