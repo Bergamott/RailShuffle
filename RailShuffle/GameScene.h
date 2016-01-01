@@ -94,7 +94,7 @@
     SKSpriteNode *nextButton;
     SKSpriteNode *backButton;
     int buttonPressed;
-    
+    float gameOverHolderScale;
     
     CGPoint exitSignOut;
     CGPoint exitSignIn;

@@ -167,6 +167,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     [gameOverHolder addChild:nextButton];
     gameOverHolder.zPosition = SIGN_Z;
     gameOverHolder.hidden = TRUE;
+    gameOverHolder.position = CGPointMake(self.size.width*0.5, self.size.height*0.5);
     
     if (isPad)
     {
@@ -181,7 +182,8 @@ static int deltaV[5] = {0,1,-1,0,0};
         exitSignHolder.position = exitSignOut;
         levelSignHolder.position = levelSignOut;
         timerSignHolder.position = timerSignOut;
-        gameOverHolder.position = CGPointMake(self.size.width*0.5, self.size.height*0.5);
+        
+        gameOverHolderScale = 1.0;
     }
     else
     {
@@ -205,8 +207,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         timerSignHolder.yScale = 0.64;
         timerSignHolder.position = timerSignOut;
         
-        gameOverHolder.position = CGPointMake(self.size.width*0.5, self.size.height*0.5);
-
+        gameOverHolderScale = 0.7;
     }
     
     [self addChild:exitSignHolder];
@@ -858,18 +859,6 @@ static int deltaV[5] = {0,1,-1,0,0};
 {
     numCarts--;
     [c haltMotion];
-/*    SKEmitterNode *smoke = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"smoke" ofType:@"sks"]];
-    smoke.position = CGPointMake(c.holderNode.position.x+c.sprite.position.x,c.holderNode.position.y+c.sprite.position.y);
-    smoke.zPosition = c.holderNode.zPosition+0.1;
-    [backgroundNode addChild:smoke];
-    SKEmitterNode *flames = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"flames" ofType:@"sks"]];
-    flames.position = smoke.position;
-    flames.zPosition = smoke.zPosition+0.1;
-    [backgroundNode addChild:flames];
-    SKEmitterNode *shards = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"shards" ofType:@"sks"]];
-    shards.position = smoke.position;
-    shards.zPosition = smoke.zPosition+0.2;
-    [backgroundNode addChild:shards];*/
     [c.holderNode removeFromParent];
     [[SoundPlayer sharedSoundPlayer] playCrash];
     
@@ -932,10 +921,10 @@ static int deltaV[5] = {0,1,-1,0,0};
     
     nextButton.hidden = (level > 15 || [solvedStatus characterAtIndex:level-1] == '0');
     
-    gameOverHolder.xScale = 0.1;
-    gameOverHolder.yScale = 0.1;
+    gameOverHolder.xScale = 0.1*gameOverHolderScale;
+    gameOverHolder.yScale = 0.1*gameOverHolderScale;
     gameOverHolder.hidden = FALSE;
-    [gameOverHolder runAction:[SKAction sequence:@[[SKAction scaleTo:1.1 duration:0.3],[SKAction scaleTo:1.0 duration:0.1]]]];
+    [gameOverHolder runAction:[SKAction sequence:@[[SKAction scaleTo:1.1*gameOverHolderScale duration:0.3],[SKAction scaleTo:1.0*gameOverHolderScale duration:0.1]]]];
 }
 
 @end
