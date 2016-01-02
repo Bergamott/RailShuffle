@@ -19,6 +19,7 @@
     int dir;
     int newDir;
     int lastPos;
+    BOOL active;
     
     GameScene *owner;
 }
@@ -49,5 +50,6 @@
 @property(nonatomic,strong) SKSpriteNode *sprite;
 @property(nonatomic) int xp;
 @property(nonatomic) int yp;
+@property(nonatomic) BOOL active;
 
 @end

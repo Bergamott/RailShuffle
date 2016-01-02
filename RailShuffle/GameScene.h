@@ -36,6 +36,9 @@
 #define STATE_SOLVED 2
 #define STATE_FAIL 3
 
+#define TICKS_PER_SECOND 5
+#define TICK_INTERVAL 0.2
+
 @class ViewController;
 @class SoundPlayer;
 @class Cart;

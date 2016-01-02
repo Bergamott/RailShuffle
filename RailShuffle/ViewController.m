@@ -26,7 +26,6 @@
 @implementation ViewController
 
 @synthesize gameScene;
-@synthesize maxLevels;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -42,13 +41,18 @@
     [skView presentScene:gameScene];
     gameScene.owner = self;
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *levelResults = [defaults stringForKey:@"levelStats"];
+    if (levelResults == NULL)
+    {
+        [defaults setObject:DEFAULT_LEVEL_STATS forKey:@"levelStats"];
+        [defaults synchronize];
+    }
+    
 #ifdef LITE
     liteBanner.hidden = FALSE;
-    maxLevels = 8;
-    NSLog(@"Lite banner not hidden");
 #else
     liteBanner.hidden = TRUE;
-    maxLevels = 16;
 #endif
     
     screenWidth = self.view.frame.size.width;
@@ -185,20 +189,26 @@
     [[SoundPlayer sharedSoundPlayer] playClick];
 
     // Set accessible levels
-    NSString *results = [[NSUserDefaults standardUserDefaults] stringForKey:@"results"];
-    for (int i=0;i<[results length];i++)
+    NSString *results = [[NSUserDefaults standardUserDefaults] stringForKey:@"levelStats"];
+    for (int i=0;i<ACTUAL_LEVELS;i++)
     {
-        int r = [results characterAtIndex:i]-'0';
-        BOOL previousSolved = TRUE;
-        if (i > 0)
-            previousSolved = ([results characterAtIndex:i-1] > '0');
+        int r = 0;
+        BOOL previouslySolved = FALSE;
+        if (i < MAX_LEVELS)
+        {
+            if (i == 0)
+                previouslySolved = TRUE;
+            else
+                previouslySolved = ([results characterAtIndex:i-1] > '0');
+            r = [results characterAtIndex:i]-'0';
+        }
         UIView *tmpV = [levelView.subviews objectAtIndex:i+1];
-        if (previousSolved && i<maxLevels)
+        if (previouslySolved)
         {
             tmpV.alpha = 1.0;
             tmpV.userInteractionEnabled = TRUE;
         }
-        else if (i<maxLevels)
+        else if (i<MAX_LEVELS)
         {
             tmpV.alpha = 0.5;
             tmpV.userInteractionEnabled = FALSE;

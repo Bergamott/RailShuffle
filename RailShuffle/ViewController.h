@@ -9,6 +9,16 @@
 #import <UIKit/UIKit.h>
 #import <SpriteKit/SpriteKit.h>
 
+#ifdef LITE
+#define MAX_LEVELS 8
+#define DEFAULT_LEVEL_STATS @"0-------"
+#else
+#define MAX_LEVELS 16
+#define DEFAULT_LEVEL_STATS @"0---------------"
+#endif
+
+#define ACTUAL_LEVELS 16
+
 @class GameScene;
 
 @interface ViewController : UIViewController {
@@ -32,7 +42,6 @@
     float screenWidth;
     
     IBOutlet UIImageView *liteBanner;
-    int maxLevels;
     
     IBOutlet UIView *levelView;
     
@@ -57,7 +66,6 @@
 -(void)fadeOutGameScene;
 
 @property(nonatomic,strong) GameScene *gameScene;
-@property(nonatomic) int maxLevels;
 
 @end
 

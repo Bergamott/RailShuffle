@@ -19,6 +19,7 @@
 @synthesize sprite;
 @synthesize xp;
 @synthesize yp;
+@synthesize active;
 
 static int deltaH[5] = {0,0,0,-1,1};
 static int deltaV[5] = {0,1,-1,0,0};
@@ -49,6 +50,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)getGoing
 {
+    active = TRUE;
     [sprite runAction:[SKAction sequence:@[[SKAction moveBy:CGVectorMake(deltaX[dir]*0.5, deltaY[dir]*0.5) duration:BLOCK_INTERVAL*0.5],[SKAction runBlock:^{[self takeNextStep];}]]]];
 }
 
@@ -198,13 +200,14 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)cartStopped
 {
+    [self haltMotion];
     [owner cartStopped];
 }
 
 -(void)cartLanded
 {
     // Unblock hole
-    [owner setBlocked:FALSE atH:xp+deltaH[dir] andV:yp+deltaV[dir]];
+    [owner setBlocked:FALSE atH:xp andV:yp];
     [owner cartLanded:self];
 }
 
@@ -299,7 +302,6 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)stepFinished
 {
-//    NSLog(@"Holder node x,y: %f,%f, sprite x,y: %f,%f",holderNode.position.x,holderNode.position.y,sprite.position.x,sprite.position.y);
     holderNode.position = CGPointMake(holderNode.position.x+deltaX[dir], holderNode.position.y+deltaY[dir]);
     sprite.position = CGPointMake(sprite.position.x-deltaX[dir], sprite.position.y-deltaY[dir]);
     dir = newDir;
@@ -309,6 +311,7 @@ static float deltaY[5] = {0,60.0,-60.0,0,0};
 
 -(void)haltMotion
 {
+    active = FALSE;
     newDir = 0;
 }
 

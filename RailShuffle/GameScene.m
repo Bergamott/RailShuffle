@@ -172,12 +172,12 @@ static int deltaV[5] = {0,1,-1,0,0};
     if (isPad)
     {
         exitSignIn = CGPointMake(2,0);
-        levelSignIn = CGPointMake(self.size.width-260.0,self.size.height);
-        timerSignIn = CGPointMake(10.0,self.size.height);
+        timerSignIn = CGPointMake(self.size.width-310.0,self.size.height);
+        levelSignIn = CGPointMake(10.0,self.size.height);
         
         exitSignOut = CGPointMake(2,-86.0);
-        levelSignOut = CGPointMake(self.size.width-260.0,self.size.height+110.0);
-        timerSignOut = CGPointMake(10.0,self.size.height+96.0);
+        timerSignOut = CGPointMake(self.size.width-310.0,self.size.height+96.0);
+        levelSignOut = CGPointMake(10.0,self.size.height+110.0);
         
         exitSignHolder.position = exitSignOut;
         levelSignHolder.position = levelSignOut;
@@ -406,8 +406,8 @@ static int deltaV[5] = {0,1,-1,0,0};
     }
     // Timer
     NSArray *times = [(NSString*)[levRows objectAtIndex:15] componentsSeparatedByString:@","];
-    maxTime = [(NSString*)[times objectAtIndex:0] intValue];
-    greatTime = [(NSString*)[times objectAtIndex:1] intValue];
+    maxTime = TICKS_PER_SECOND * [(NSString*)[times objectAtIndex:0] intValue];
+    greatTime = TICKS_PER_SECOND * [(NSString*)[times objectAtIndex:1] intValue];
     timeLeft = maxTime;
     
     movingPiece = -1;
@@ -424,7 +424,7 @@ static int deltaV[5] = {0,1,-1,0,0};
     digit1.texture = [myAtlas textureNamed:[NSString stringWithFormat:@"%d",level%10]];
     
     [self animateSignsIn];
-    self.gameLoopTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self
+    self.gameLoopTimer = [NSTimer scheduledTimerWithTimeInterval: TICK_INTERVAL target: self
                                                 selector: @selector(gameLoop:) userInfo: nil repeats: YES];
 }
 
@@ -814,6 +814,7 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)cartCrashed:(Cart*)c
 {
+    [carts removeObject:c];
     numCarts--;
     [c haltMotion];
     SKEmitterNode *smoke = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"smoke" ofType:@"sks"]];
@@ -836,10 +837,10 @@ static int deltaV[5] = {0,1,-1,0,0};
 
 -(void)dropCart:(Cart*)c intoHoleAtH:(int)h andV:(int)v
 {
+    [carts removeObject:c];
     int holeHeight = 0;
     while (groundMap[v-holeHeight][h] == 0)
         holeHeight++;
-    NSLog(@"Holeheight: %d",holeHeight);
     SKSpriteNode *holeMask = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size: CGSizeMake(270.0, 60.0*holeHeight+60.0)]; // Include enough mask for shards later
     holeMask.anchorPoint = CGPointMake(0, 0);
     holeMask.position = CGPointMake(gridBaseX+(h-1)*90.0-c.holderNode.position.x,gridBaseY+(v+1-holeHeight)*60.0-c.holderNode.position.y);
@@ -886,13 +887,49 @@ static int deltaV[5] = {0,1,-1,0,0};
     else
     {
         timerBar.xScale = timeLeft*BAR_MAX_SCALE/maxTime;
+        Cart *crashedCart0 = NULL;
+        Cart *crashedCart1 = NULL;
+        for (int i=0;i<carts.count;i++)
+            for (int j=i+1;j<carts.count;j++)
+            {
+                // Check for collision
+                Cart *cart0 = [carts objectAtIndex:i];
+                Cart *cart1 = [carts objectAtIndex:j];
+                if (cart0.holderNode.position.x+cart0.sprite.position.x < cart1.holderNode.position.x+cart1.sprite.position.x + 60.0 &&
+                    cart1.holderNode.position.x+cart1.sprite.position.x < cart0.holderNode.position.x+cart0.sprite.position.x + 60.0 &&
+                    cart0.holderNode.position.y+cart0.sprite.position.y < cart1.holderNode.position.y+cart1.sprite.position.y + 40.0 &&
+                    cart1.holderNode.position.y+cart1.sprite.position.y < cart0.holderNode.position.y+cart0.sprite.position.y + 40.0)
+                {
+                    crashedCart0 = cart0;
+                    crashedCart1 = cart1;
+                }
+            }
+        if (crashedCart0 != NULL)
+        {
+            if (crashedCart0.active)
+            {
+                [self cartCrashed:crashedCart0];
+                if (crashedCart1.active)
+                    numCarts--;
+                [crashedCart1 haltMotion];
+                [crashedCart1.holderNode removeFromParent];
+                [carts removeObject:crashedCart1];
+            }
+            else
+            {
+                [self cartCrashed:crashedCart1];
+                [crashedCart0 haltMotion];
+                [crashedCart0.holderNode removeFromParent];
+                [carts removeObject:crashedCart0];
+            }
+        }
     }
 }
 
 -(void)showGameOver
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *solvedStatus = [defaults stringForKey:@"results"];
+    NSString *solvedStatus = [defaults stringForKey:@"levelStats"];
     if (gameState == STATE_SOLVED)
     {
         unichar pluses[1];
@@ -914,7 +951,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         if (pluses[0] > [solvedStatus characterAtIndex:level-1])
         {
             solvedStatus = [solvedStatus stringByReplacingCharactersInRange:NSMakeRange(level-1, 1) withString:[NSString stringWithCharacters:pluses length:1]];
-            [defaults setObject:solvedStatus forKey:@"results"];
+            [defaults setObject:solvedStatus forKey:@"levelStats"];
             [defaults synchronize];
         }
     }
@@ -922,7 +959,7 @@ static int deltaV[5] = {0,1,-1,0,0};
         gameOverHeadline.texture = [myAtlas textureNamed:@"game_over"];
     [gameOverHeadline setSize:gameOverHeadline.texture.size];
     
-    nextButton.hidden = (level > owner.maxLevels-1 || [solvedStatus characterAtIndex:level-1] == '0');
+    nextButton.hidden = (level > MAX_LEVELS-1 || [solvedStatus characterAtIndex:level-1] == '0');
     
     gameOverHolder.xScale = 0.1*gameOverHolderScale;
     gameOverHolder.yScale = 0.1*gameOverHolderScale;
