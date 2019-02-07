@@ -50,8 +50,6 @@ static int deltaV[5] = {0,1,-1,0,0};
         /* Setup your scene here */
         myAtlas = [SKTextureAtlas atlasNamed:@"pieces"];
         
-        NSLog(@"Height: %f, width: %f",size.height,size.width);
-        
         backgroundNode = [SKNode node];
         if (size.width/size.height < 1.34) // iPad screen
         {

@@ -307,6 +307,9 @@
     [[SoundPlayer sharedSoundPlayer] playSong:3];
 }
 
-
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    [[SoundPlayer sharedSoundPlayer] stopSong];
+}
 
 @end
