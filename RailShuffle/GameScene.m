@@ -54,10 +54,10 @@ static int deltaV[5] = {0,1,-1,0,0};
         if (size.width/size.height < 1.34) // iPad screen
         {
             isPad = TRUE;
-            yScale = 1.0;
-            xScale = 1.0;
-            gridBaseX = 62.0-180.0;
-            gridBaseY = -36.0;
+            yScale = size.width/1024.0;
+            xScale = size.width/1024.0;
+            gridBaseX = xScale*62.0-180.0;
+            gridBaseY = -36.0*yScale;
         }
         else
         {
