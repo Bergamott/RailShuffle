@@ -27,6 +27,10 @@
 
 @synthesize gameScene;
 
+-(BOOL)prefersHomeIndicatorAutoHidden {
+    return TRUE;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -203,6 +207,8 @@
 
     // Set accessible levels
     NSString *results = [[NSUserDefaults standardUserDefaults] stringForKey:@"levelStats"];
+    // Temporary
+    // results = @"1111111111111111";
     for (int i=0;i<ACTUAL_LEVELS;i++)
     {
         int r = 0;

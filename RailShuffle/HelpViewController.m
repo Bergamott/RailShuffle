@@ -15,6 +15,10 @@
 
 @implementation HelpViewController
 
+-(BOOL)prefersHomeIndicatorAutoHidden {
+    return TRUE;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
