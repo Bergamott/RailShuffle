@@ -50,8 +50,10 @@ static int deltaV[5] = {0,1,-1,0,0};
         /* Setup your scene here */
         myAtlas = [SKTextureAtlas atlasNamed:@"pieces"];
         
+        NSLog(@"Height: %f, width: %f",size.height,size.width);
+        
         backgroundNode = [SKNode node];
-        if (size.height > 330) // iPad screen
+        if (size.width/size.height < 1.34) // iPad screen
         {
             isPad = TRUE;
             yScale = 1.0;
@@ -62,12 +64,20 @@ static int deltaV[5] = {0,1,-1,0,0};
         else
         {
             isPad = FALSE;
-            if (size.width > 480) // 4-inch screen
+            if (size.width > 481) // 4-inch screen or bigger
                 xScale = 0.48;
             else // 3.5-inch screen
                 xScale = 0.412;
             yScale = 0.412;
-            gridBaseX = 0;
+            xScale *= size.height/320.0;
+            yScale *= size.height/320.0;
+            if (size.width>size.height*2.0)
+            {
+                // iPhone X or similar
+                gridBaseX = 100.0;
+            }
+            else
+                gridBaseX = 0;
             gridBaseY = -36.0;
         }
         screenHeight = size.height / yScale;

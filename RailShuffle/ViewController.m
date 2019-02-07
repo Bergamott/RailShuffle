@@ -56,6 +56,7 @@
 #endif
     
     screenWidth = self.view.frame.size.width;
+    screenHeight = self.view.frame.size.height;
     
     shuffleLetters = [[NSArray alloc] initWithObjects:letter0,letter1,letter2,letter3,letter4,letter5,letter6, nil];
     for (int i=0;i<7;i++)
@@ -106,33 +107,45 @@
         helpButton.center = CGPointMake(964.0+300.0*ANGLE_COS, 533.0+300.0*ANGLE_SIN);
         musicButton.center = CGPointMake(964.0+400.0*ANGLE_COS, 655.0+400.0*ANGLE_SIN);
     }
-    else // iPhone
+    else if (screenWidth<2.0*screenHeight) // Regular iPhone
     {
         playButton.center = CGPointMake(screenWidth-30.0+100.0*ANGLE_COS, 140.0+100.0*ANGLE_SIN);
         helpButton.center = CGPointMake(screenWidth-30.0+150.0*ANGLE_COS, 200.0+150.0*ANGLE_SIN);
         musicButton.center = CGPointMake(screenWidth-30.0+200.0*ANGLE_COS, 259.0+200.0*ANGLE_SIN);
+    }
+    else // iPhone X or similar
+    {
+        playButton.center = CGPointMake(screenWidth-80.0+100.0*ANGLE_COS, 170.0+100.0*ANGLE_SIN);
+        helpButton.center = CGPointMake(screenWidth-80.0+150.0*ANGLE_COS, 230.0+150.0*ANGLE_SIN);
+        musicButton.center = CGPointMake(screenWidth-80.0+200.0*ANGLE_COS, 289.0+200.0*ANGLE_SIN);
     }
     
     [UIView beginAnimations:@"dummy" context:nil];
     [UIView setAnimationDuration:0.6];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         playButton.center = CGPointMake(964.0, 405.0);
-    else
+    else if (screenWidth<2.0*screenHeight)
         playButton.center = CGPointMake(screenWidth-30.0, 140.0);
+    else
+        playButton.center = CGPointMake(screenWidth-80.0, 170.0);
     [UIView commitAnimations];
     [UIView beginAnimations:@"dummy" context:nil];
     [UIView setAnimationDuration:0.9];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         helpButton.center = CGPointMake(964.0, 533.0);
-    else
+    else if (screenWidth<2.0*screenHeight)
         helpButton.center = CGPointMake(screenWidth-30.0, 200.0);
+    else
+        helpButton.center = CGPointMake(screenWidth-80.0, 230.0);
     [UIView commitAnimations];
     [UIView beginAnimations:@"dummy" context:nil];
     [UIView setAnimationDuration:1.2];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
         musicButton.center = CGPointMake(964.0, 655.0);
-    else
+    else if (screenWidth<2.0*screenHeight)
         musicButton.center = CGPointMake(screenWidth-30.0, 259.0);
+    else
+        musicButton.center = CGPointMake(screenWidth-80.0, 289.0);
     [UIView commitAnimations];
 }
 

@@ -40,6 +40,7 @@
     BOOL shouldShuffle;
     
     float screenWidth;
+    float screenHeight;
     
     IBOutlet UIImageView *liteBanner;
     
